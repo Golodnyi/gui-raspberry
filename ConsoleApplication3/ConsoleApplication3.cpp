@@ -18,6 +18,7 @@
 using namespace std;
 
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
+extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 
 int main() {
     int result;
@@ -356,15 +357,13 @@ int main() {
         }
         cout << endl;
 
-        //char *buff_3_2 = new char[x];
         vector<char> buff_3_2;
 		union su {
 			float speed;
 			char speedData[4];
 		};
 		su speed;
-        // char *buff_3_2 = (char *)malloc(x * sizeof(char));
-        //result = recv(client_socket, &buff_3_2[0], buff_3_2.size(), 0);
+
         for (int i = 0; i < bitfield.size(); i++) {
             if ((bool) bitfield[i] == 1) {
 				buff_3_2.resize(telemetry_values[i].byte);
@@ -379,11 +378,9 @@ int main() {
                                      ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << b << " U32" << endl;
                     } else if (telemetry_values[i].type == "Float") {
-
-						speed.speedData[0] = buff_3_2[0];
-						speed.speedData[1] = buff_3_2[1];
-						speed.speedData[2] = buff_3_2[2];
-						speed.speedData[3] = buff_3_2[3];
+						for (int j = 0; j < 4; j++) {
+						speed.speedData[j]= buff_3_2[j];
+						}
 						float c = speed.speed;
                         cout << telemetry_values[i].value << " = " << c << " Float" << endl;
                     } else {
@@ -420,6 +417,26 @@ int main() {
         result = recv(client_socket, buff_3_3, 1, 0);
         uint8_t crc8 = (uint8_t) buff_3_3[1];
         cout << crc8 << endl;
+
+		/*unsigned char buff_val_3_1 = crc8_calc((unsigned char *)buff_3_1, 2);
+		unsigned char buff_val_3_2 = crc8_calc((unsigned char *)&buff_3_2, bitfield.size());
+		unsigned char buff_val_3 = buff_val_3_1 + buff_val_3_2;
+		if (buff_val_3 == crc8) {
+			cout << "crc8 success" << endl;
+		}
+		else {
+			cout << "crc8 fail" << endl;
+		}
+
+			cout << "Send request 3" << endl;
+
+			char answer_3[3];
+			copy(buff_3_1, buff_3_1 + 2,answer_3);
+			answer[3] = crc8;
+			//copy(buff_3_3, buff_3_3, answer_3 + 3);
+
+			int bytes_3 = send(client_socket, answer_3, 3, 0);
+			cout << "Send " << bytes_3 << " bytes" << endl;*/
 
     }
 
