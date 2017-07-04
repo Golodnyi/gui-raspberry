@@ -361,8 +361,10 @@ int main() {
         result = recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
         char index[2];
         copy(buff_3_1, buff_3_1 + 2, index);            // перенесли первые 2 байта из сообщения
+        vector<char> temp_vector(2); // длина телеметрических данных + преамбула 2 байта
         for (int i = 0; i < 2; i++) {
             cout << index[i];
+            temp_vector[i] = buff_3_1[i];
         }
         cout << endl;
 
@@ -418,23 +420,22 @@ int main() {
                 } else {
                     cout << "mistake" << endl;
                 }
+                temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
 				buff_3_2.clear();
             }
         }
 
         char buff_3_3[1];
         result = recv(client_socket, buff_3_3, 1, 0);
-        uint8_t crc8 = (uint8_t) buff_3_3[1];
+        uint8_t crc8 = (uint8_t) buff_3_3[0];
         cout << crc8 << endl;
 
-		unsigned char buff_val_3_1 = crc8_calc((unsigned char *)buff_3_1, 2);
-		unsigned char buff_val_3_2 = crc8_calc((unsigned char *)&buff_3_2, bitfield.size());
-		unsigned char buff_val_3 = buff_val_3_1 + buff_val_3_2;
-		if (buff_val_3 == crc8) {
+		unsigned char buff_val_3_2 = crc8_calc((unsigned char *)temp_vector.data(), temp_vector.size());
+		if (buff_val_3_2 == crc8) {
 			cout << "crc8 success" << endl;
 		}
 		else {
-			cout << "crc8 fail" << endl;
+			cout << "crc8 fail: " << buff_val_3_2 << crc8 << endl;
 			continue;
 		}
 
@@ -442,12 +443,11 @@ int main() {
 
 		char answer_3[3];
 		copy(buff_3_1, buff_3_1 + 2,answer_3);
-		answer[3] = crc8;
+		answer_3[2] = crc8_calc((unsigned char*)answer_3, 2);
 		//copy(buff_3_3, buff_3_3, answer_3 + 3);
 
 		int bytes_3 = send(client_socket, answer_3, 3, 0);
 		cout << "Send " << bytes_3 << " bytes" << endl;
-
     }
 #if defined(_WIN32) || defined(WIN32)
 	closesocket(client_socket);
