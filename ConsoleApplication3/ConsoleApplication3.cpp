@@ -3,8 +3,7 @@
 #include <iostream>
 #include <bitset>
 #include <vector>
-
-#if defined(WIN32) || defined(WINDOWS)
+#ifdef _WIN32
 #include "stdafx.h"
 #pragma comment(lib, "Ws2_32.lib")   //библиотека для сокетов
 #include <conio.h>                   //для использования getch()
@@ -15,16 +14,14 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-
 #endif
-
 using namespace std;
 
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 
 int main() {
     int result;
-#if defined(WIN32) || defined(WINDOWS)
+#ifdef _WIN32
     WSADATA wsaData;
     result = WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
@@ -35,7 +32,7 @@ int main() {
     }
     struct addrinfo *addr = NULL;        // структура, хранящая информацию об IP-адресе  слущающего сокета
     struct addrinfo hints;                // шаблон для инициализации структуры адреса
-#if defined(WIN32) || defined(WINDOWS)
+#ifdef _WIN32
     ZeroMemory(&hints, sizeof(hints));
 #endif
 
@@ -48,7 +45,7 @@ int main() {
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
-#if defined(WIN32) || defined(WINDOWS)
+#ifdef _WIN32
         WSACleanup();                    // выгрузка библиотеки Ws2_32.dll
 #endif
         return 1;                        // выход из программы
@@ -289,8 +286,7 @@ int main() {
         telemetry_values[14] = {"Mileage", 4, "Float"}; // 15 текущий пробег
         telemetry_values[15] = {"Way", 4, "Float"};  // 16 последний отрезок пути
         telemetry_values[16] = {"AllSeconds", 2, "U16"}; // 17 общее кол-во сек на последнем отрезке
-        telemetry_values[17] = {"SecondLast", 2,
-                                "U16"}; // 18 Количество секунд на последнем отрезке пути, по которым вычислялся пробег
+        telemetry_values[17] = {"SecondLast", 2, "U16"}; // 18 Количество секунд на последнем отрезке пути, по которым вычислялся пробег
         telemetry_values[18] = {"Power", 2, "U16"}; // 19 Напряжение на основном источнике питания
         telemetry_values[19] = {"Reserv", 2, "U16"}; // 20 Напряжение на резервном источнике питания
         telemetry_values[20] = {"StateU_Ain1", 2, "U16"}; // 21 Напряжение на аналоговом входе 1 (Ain1)
@@ -364,7 +360,7 @@ int main() {
         cout << endl;
 
         //char *buff_3_2 = new char[x];
-        vector<unsigned char> buff_3_2(x);
+        vector<char> buff_3_2(x);
         // char *buff_3_2 = (char *)malloc(x * sizeof(char));
         result = recv(client_socket, &buff_3_2[0], buff_3_2.size(), 0);
 
