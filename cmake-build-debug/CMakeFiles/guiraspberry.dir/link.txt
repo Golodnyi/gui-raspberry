@@ -1,1 +1,0 @@
-/usr/bin/c++   -g   CMakeFiles/guiraspberry.dir/ConsoleApplication3/ConsoleApplication3.cpp.o  -o guiraspberry 
