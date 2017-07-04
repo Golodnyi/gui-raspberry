@@ -3,7 +3,7 @@
 #include <iostream>
 #include <bitset>
 #include <vector>
-#ifdef _WIN32
+#if defined(_WIN32) || defined(WIN32)
 #include "stdafx.h"
 #pragma comment(lib, "Ws2_32.lib")   //библиотека для сокетов
 #include <conio.h>                   //для использования getch()
@@ -22,7 +22,7 @@ extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 
 int main() {
     int result;
-#ifdef _WIN32
+#if defined(_WIN32) || defined(WIN32)
     WSADATA wsaData;
     result = WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
@@ -33,7 +33,7 @@ int main() {
     }
     struct addrinfo *addr = NULL;        // структура, хранящая информацию об IP-адресе  слущающего сокета
     struct addrinfo hints;                // шаблон для инициализации структуры адреса
-#ifdef _WIN32
+#if defined(_WIN32) || defined(WIN32)
     ZeroMemory(&hints, sizeof(hints));
 #endif
 
@@ -46,7 +46,7 @@ int main() {
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
-#ifdef _WIN32
+#if defined(_WIN32) || defined(WIN32)
         WSACleanup();                    // выгрузка библиотеки Ws2_32.dll
 #endif
         return 1;                        // выход из программы
