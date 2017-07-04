@@ -1,6 +1,7 @@
 ﻿  ConsoleApplication3.cpp
-c:\users\user\documents\visual studio 2017\projects\consoleapplication3\consoleapplication3\consoleapplication3.cpp(487): error C3867: "std::vector<unsigned char,std::allocator<_Ty>>::data": нестандартный синтаксис; используйте "&", чтобы создать указатель на член
+c:\users\user\documents\visual studio 2017\projects\consoleapplication3\consoleapplication3\consoleapplication3.cpp(349): error C3867: "std::vector<unsigned char,std::allocator<_Ty>>::data": нестандартный синтаксис; используйте "&", чтобы создать указатель на член
           with
           [
               _Ty=unsigned char
           ]
+c:\users\user\documents\visual studio 2017\projects\consoleapplication3\consoleapplication3\consoleapplication3.cpp(365): warning C4244: инициализация: преобразование "int" в "float", возможна потеря данных
