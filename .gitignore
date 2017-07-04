@@ -6,3 +6,5 @@ Makefile
 CMakeFiles
 guiraspberry
 guiraspberry.cbp
+Debug
+Release
