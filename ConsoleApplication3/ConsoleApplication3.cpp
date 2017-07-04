@@ -14,6 +14,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <zconf.h>
+
 #endif
 using namespace std;
 
@@ -439,5 +441,9 @@ int main() {
 			cout << "Send " << bytes_3 << " bytes" << endl;
 
     }
+#if defined(_WIN32) || defined(WIN32)
 	closesocket(client_socket);
+#else
+    close(client_socket);
+#endif
 }
