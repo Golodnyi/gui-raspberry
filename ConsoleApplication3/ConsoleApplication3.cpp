@@ -25,14 +25,17 @@ extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 int main() {
     int result;
 #if defined(_WIN32) || defined(WIN32)
+    cout << "Windows" << endl;
     WSADATA wsaData;
     result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-#endif
     if (result != 0)                // проверка на ошибку загрузки
     {
         cerr << "WSAStartup failed: " << result << endl;
         return result;
     }
+#else
+    cout << "Linux" << endl;
+#endif
     struct addrinfo *addr = NULL;        // структура, хранящая информацию об IP-адресе  слущающего сокета
     struct addrinfo hints;                // шаблон для инициализации структуры адреса
 #if defined(_WIN32) || defined(WIN32)
