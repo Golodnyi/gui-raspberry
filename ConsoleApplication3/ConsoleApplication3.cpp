@@ -94,6 +94,7 @@ int main() {
         } else {
             cout << "CSd fail"
                  << endl;            // проверяем сумму документов (CSd-контр.сумма документов, buff-общая сумма входящего пакета)
+			continue;
         }
 
         unsigned char CSp_val = xor_sum((unsigned char *) head, 15);
@@ -103,6 +104,7 @@ int main() {
         } else {
             cout << "CSp fail"
                  << endl;        // проверяем заголовок (CSp-контр.сумма заголовка, head-16 байтовый заголовок пакета)
+			continue;
         }
 
         char s[3];
@@ -127,20 +129,20 @@ int main() {
         uint16_t body_size = 3;
 
         copy(preamble, preamble + 4, answer);    // записываем преамбулу в ответ
-        int k = 0;
+        short int k = 0;
         for (int i = 4; i < 8; i++) {            // записываем IDs ответ
             answer[i] = (IDs >> k) & 0xFF;
-            k = k + 8;
+            k += 8;
         }
         k = 0;
         for (int i = 8; i < 12; i++) {            // записываем IDr в ответ
             answer[i] = (IDr >> k) & 0xFF;
-            k = k + 8;
+            k += 8;
         }
         k = 0;
         for (int i = 12; i < 14; i++) {                // записываем размер в ответ
             answer[i] = (body_size << k) & 0xFF;
-            k = k + 8;
+            k += 8;
         }
         unsigned char body_sign = xor_sum((unsigned char *) answer_body, 3);
         answer[14] = body_sign;
@@ -185,6 +187,7 @@ int main() {
             cout << "CSd 2 success" << endl;
         } else {
             cout << "CSd 2 fail" << endl;
+			continue;
         }
 
         unsigned char CSp_val_2 = xor_sum((unsigned char *) head_2, 15);
@@ -193,6 +196,7 @@ int main() {
             cout << "CSp 2 success" << endl;
         } else {
             cout << "CSp 2 fail" << endl;
+			continue;
         }
         char FLEX[6];
         copy(buff_2, buff_2 + 6, FLEX);
@@ -238,20 +242,20 @@ int main() {
         uint16_t body_size_2 = 9;
 
         copy(preamble_2, preamble_2 + 4, answer_2);        // записываем преамбулу во 2 ответ
-        int j = 0;
+        k = 0;
         for (int i = 4; i < 8; i++) {            // записываем IDs_2 во 2 ответ
-            answer_2[i] = (IDs_2 >> j) & 0xFF;
-            j = j + 8;
+            answer_2[i] = (IDs_2 >> k) & 0xFF;
+            k += 8;
         }
-        j = 0;
+        k = 0;
         for (int i = 8; i < 12; i++) {            // записываем IDr_2 во 2 ответ
-            answer_2[i] = (IDr_2 >> j) & 0xFF;
-            j = j + 8;
+            answer_2[i] = (IDr_2 >> k) & 0xFF;
+            k += 8;
         }
-        j = 0;
+        k = 0;
         for (int i = 12; i < 14; i++) {                // записываем размер во 2 ответ
-            answer_2[i] = (body_size_2 << j) & 0xFF;
-            j = j + 8;
+            answer_2[i] = (body_size_2 << k) & 0xFF;
+            k += 8;
         }
         unsigned char body_sign_2 = xor_sum((unsigned char *) answer_body_2, body_size_2);
         answer_2[14] = body_sign_2;
@@ -426,17 +430,18 @@ int main() {
 		}
 		else {
 			cout << "crc8 fail" << endl;
+			continue;
 		}
 
-			cout << "Send request 3" << endl;
+		cout << "Send request 3" << endl;
 
-			char answer_3[3];
-			copy(buff_3_1, buff_3_1 + 2,answer_3);
-			answer[3] = crc8;
-			//copy(buff_3_3, buff_3_3, answer_3 + 3);
+		char answer_3[3];
+		copy(buff_3_1, buff_3_1 + 2,answer_3);
+		answer[3] = crc8;
+		//copy(buff_3_3, buff_3_3, answer_3 + 3);
 
-			int bytes_3 = send(client_socket, answer_3, 3, 0);
-			cout << "Send " << bytes_3 << " bytes" << endl;
+		int bytes_3 = send(client_socket, answer_3, 3, 0);
+		cout << "Send " << bytes_3 << " bytes" << endl;
 
     }
 	closesocket(client_socket);
