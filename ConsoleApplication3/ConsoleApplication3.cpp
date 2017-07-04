@@ -305,17 +305,14 @@ int main() {
         telemetry_values[33] = {"StateInImp2", 4, "U32"}; // 34 2
         telemetry_values[34] = {"Frequency1", 2, "U16"}; // 35 Частота на аналогово-частотном датчике уровня топлива 1
         telemetry_values[35] = {"Frequency2", 2, "U16"}; // 36 датчике  2
-        telemetry_values[36] = {"Motochas", 4,
-                                "U32"}; // 37 Моточасы, подсчитанные во время срабатывания датчика работы генератора
-        telemetry_values[37] = {"LevelRS485_1", 2,
-                                "U16"}; // 38 Уровень топлива, измеренный датчиком уровня топлива 1 RS - 485
+        telemetry_values[36] = {"Motochas", 4, "U32"}; // 37 Моточасы, подсчитанные во время срабатывания датчика работы генератора
+        telemetry_values[37] = {"LevelRS485_1", 2, "U16"}; // 38 Уровень топлива, измеренный датчиком уровня топлива 1 RS - 485
         telemetry_values[38] = {"LevelRS485_2", 2, "U16"}; // 39 Уровень топлива 2
         telemetry_values[39] = {"LevelRS485_3", 2, "U16"}; // 40 Уровень топлива 3
         telemetry_values[40] = {"LevelRS485_4", 2, "U16"}; // 41 Уровень топлива 4
         telemetry_values[41] = {"LevelRS485_5", 2, "U16"}; // 42 Уровень топлива 5
         telemetry_values[42] = {"LevelRS485_6", 2, "U16"}; // 43 Уровень топлива 6
-        telemetry_values[43] = {"LevelRS232", 2,
-                                "U16"}; // 44 Уровень топлива, измеренный датчиком уровня топлива RS - 232
+        telemetry_values[43] = {"LevelRS232", 2, "U16"}; // 44 Уровень топлива, измеренный датчиком уровня топлива RS - 232
         telemetry_values[44] = {"Temp1", 1, "I8"}; // 45 датчика 1 (в градусах Цельсия)
         telemetry_values[45] = {"Temp2", 1, "I8"}; // 46 датчика 2 (в градусах Цельсия)
         telemetry_values[46] = {"Temp3", 1, "I8"}; // 47 датчика 3 (в градусах Цельсия)
@@ -372,44 +369,42 @@ int main() {
                     if (telemetry_values[i].type == "I32") {
                         int32_t a = ((int8_t) buff_3_2[l += 3] << 24) + ((int8_t) buff_3_2[l -= 1] << 16) +
                                     ((int8_t) buff_3_2[l -= 1] << 8) + (int8_t) buff_3_2[l -= 1];
-                        cout << telemetry_values[i].value << " = " << a << endl;
+                        cout << telemetry_values[i].value << " = " << a << " I32" << endl;
                     } else if (telemetry_values[i].type == "U32") {
                         uint32_t b = ((uint8_t) buff_3_2[l += 3] << 24) + ((uint8_t) buff_3_2[l -= 1] << 16) +
                                      ((uint8_t) buff_3_2[l -= 1] << 8) + (uint8_t) buff_3_2[l -= 1];
-                        cout << telemetry_values[i].value << " = " << b << endl;
+                        cout << telemetry_values[i].value << " = " << b << " U32" << endl;
                     } else if (telemetry_values[i].type == "Float") {
                         float c = ((int8_t) buff_3_2[l += 3] << 24) + ((int8_t) buff_3_2[l -= 1] << 16) +
                                   ((int8_t) buff_3_2[l -= 1] << 8) + (int8_t) buff_3_2[l -= 1];
-                        cout << telemetry_values[i].value << " = " << c << endl;
+                        cout << telemetry_values[i].value << " = " << c << " Float" << endl;
                     } else {
-                        cout << "mistake, 4 bytes";
+                        cout << "mistake, 4 bytes" << endl;
                     }
                 } else if (telemetry_values[i].byte == 2) {
                     if (telemetry_values[i].type == "I16") {
                         int16_t d = ((int8_t) buff_3_2[l += 1] << 8) + (int8_t) buff_3_2[l -= 1];
-                        cout << telemetry_values[i].value << " = " << d << endl;
+                        cout << telemetry_values[i].value << " = " << d << " I16" << endl;
                     } else if (telemetry_values[i].type == "U16") {
                         uint16_t e = ((uint8_t) buff_3_2[l += 1] << 8) + (uint8_t) buff_3_2[l -= 1];
-                        cout << telemetry_values[i].value << " = " << e << endl;
+                        cout << telemetry_values[i].value << " = " << e << " U16" << endl;
                     } else {
-                        cout << "mistake, 2 bytes";
+                        cout << "mistake, 2 bytes" << endl;
                     }
                 } else if (telemetry_values[i].byte == 1) {
                     if (telemetry_values[i].type == "I8") {
                         int8_t f = (int8_t) buff_3_2[l];
-                        cout << telemetry_values[i].value << " = " << f << endl;
+                        cout << telemetry_values[i].value << " = " << f << " I8" << endl;
                     } else if (telemetry_values[i].type == "U8") {
                         uint8_t g = (uint8_t) buff_3_2[l];
-                        cout << telemetry_values[i].value << " = " << g << endl;
+                        cout << telemetry_values[i].value << " = " << g << " U8" << endl;
                     } else {
-                        cout << "mistake, 1 bytes";
+                        cout << "mistake, 1 bytes" << endl;
                     }
                 } else {
-                    cout << "mistake";
+                    cout << "mistake" << endl;
                 }
 
-            } else {
-                cout << "test1";
             }
         }
 
