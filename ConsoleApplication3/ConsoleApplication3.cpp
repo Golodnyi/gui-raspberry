@@ -357,46 +357,54 @@ int main() {
         cout << endl;
 
         //char *buff_3_2 = new char[x];
-        vector<char> buff_3_2(x);
+        vector<char> buff_3_2;
+		union su {
+			float speed;
+			char speedData[4];
+		};
+		su speed;
         // char *buff_3_2 = (char *)malloc(x * sizeof(char));
-        result = recv(client_socket, &buff_3_2[0], buff_3_2.size(), 0);
-
-        for (int i = 0; i < 69; i++) {
-            int l = i;
+        //result = recv(client_socket, &buff_3_2[0], buff_3_2.size(), 0);
+        for (int i = 0; i < bitfield.size(); i++) {
             if ((bool) bitfield[i] == 1) {
-
+				buff_3_2.resize(telemetry_values[i].byte);
+				result = recv(client_socket, &buff_3_2[0], telemetry_values[i].byte, 0);
                 if (telemetry_values[i].byte == 4) {
                     if (telemetry_values[i].type == "I32") {
-                        int32_t a = ((int8_t) buff_3_2[l += 3] << 24) + ((int8_t) buff_3_2[l -= 1] << 16) +
-                                    ((int8_t) buff_3_2[l -= 1] << 8) + (int8_t) buff_3_2[l -= 1];
+                        int32_t a = ((int8_t) buff_3_2[3] << 24) + ((int8_t) buff_3_2[2] << 16) +
+                                    ((int8_t) buff_3_2[1] << 8) + (int8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << a << " I32" << endl;
                     } else if (telemetry_values[i].type == "U32") {
-                        uint32_t b = ((uint8_t) buff_3_2[l += 3] << 24) + ((uint8_t) buff_3_2[l -= 1] << 16) +
-                                     ((uint8_t) buff_3_2[l -= 1] << 8) + (uint8_t) buff_3_2[l -= 1];
+                        uint32_t b = ((uint8_t) buff_3_2[3] << 24) + ((uint8_t) buff_3_2[2] << 16) +
+                                     ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << b << " U32" << endl;
                     } else if (telemetry_values[i].type == "Float") {
-                        float c = ((int8_t) buff_3_2[l += 3] << 24) + ((int8_t) buff_3_2[l -= 1] << 16) +
-                                  ((int8_t) buff_3_2[l -= 1] << 8) + (int8_t) buff_3_2[l -= 1];
+
+						speed.speedData[0] = buff_3_2[0];
+						speed.speedData[1] = buff_3_2[1];
+						speed.speedData[2] = buff_3_2[2];
+						speed.speedData[3] = buff_3_2[3];
+						float c = speed.speed;
                         cout << telemetry_values[i].value << " = " << c << " Float" << endl;
                     } else {
                         cout << "mistake, 4 bytes" << endl;
                     }
                 } else if (telemetry_values[i].byte == 2) {
                     if (telemetry_values[i].type == "I16") {
-                        int16_t d = ((int8_t) buff_3_2[l += 1] << 8) + (int8_t) buff_3_2[l -= 1];
+                        int16_t d = ((int8_t) buff_3_2[1] << 8) + (int8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << d << " I16" << endl;
                     } else if (telemetry_values[i].type == "U16") {
-                        uint16_t e = ((uint8_t) buff_3_2[l += 1] << 8) + (uint8_t) buff_3_2[l -= 1];
+                        uint16_t e = ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << e << " U16" << endl;
                     } else {
                         cout << "mistake, 2 bytes" << endl;
                     }
                 } else if (telemetry_values[i].byte == 1) {
                     if (telemetry_values[i].type == "I8") {
-                        int8_t f = (int8_t) buff_3_2[l];
+                        int8_t f = (int8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << f << " I8" << endl;
                     } else if (telemetry_values[i].type == "U8") {
-                        uint8_t g = (uint8_t) buff_3_2[l];
+                        uint8_t g = (uint8_t) buff_3_2[0];
                         cout << telemetry_values[i].value << " = " << g << " U8" << endl;
                     } else {
                         cout << "mistake, 1 bytes" << endl;
@@ -404,7 +412,7 @@ int main() {
                 } else {
                     cout << "mistake" << endl;
                 }
-
+				buff_3_2.clear();
             }
         }
 
