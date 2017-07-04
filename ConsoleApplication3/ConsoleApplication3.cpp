@@ -278,7 +278,7 @@ int main() {
             short int byte;
             string type;
         };
-        values telemetry_values[69];
+        values telemetry_values[85];
         telemetry_values[0] = {"numPage", 4, "U32"}; // 1 id записи в черном ящике
         telemetry_values[1] = {"Code", 2, "U16"}; // 2 код события
         telemetry_values[2] = {"Time", 4, "U32"}; // 3 время события
@@ -348,6 +348,22 @@ int main() {
         telemetry_values[66] = {"CAN_EngineTime", 4, "U32"}; // 67 Полное время работы двигателя
         telemetry_values[67] = {"CAN_TimeTO", 2, "I16"};  // 68 Расстояние до ТО
         telemetry_values[68] = {"CAN_Speed", 1, "U8"}; // 69 Скорость ТС
+        telemetry_values[69] = {"ATemp1", 2, "U16"};
+        telemetry_values[70] = {"ATemp1", 2, "U16"};
+        telemetry_values[71] = {"ATemp1", 2, "U16"};
+        telemetry_values[72] = {"ATemp1", 2, "U16"};
+        telemetry_values[73] = {"ATemp1", 2, "U16"};
+        telemetry_values[74] = {"ATemp1", 2, "U16"};
+        telemetry_values[75] = {"ATemp1", 2, "U16"};
+        telemetry_values[76] = {"ATemp1", 2, "U16"};
+        telemetry_values[77] = {"ATemp1", 2, "U16"};
+        telemetry_values[78] = {"ATemp1", 2, "U16"};
+        telemetry_values[79] = {"ATemp1", 2, "U16"};
+        telemetry_values[80] = {"ATemp1", 2, "U16"};
+        telemetry_values[81] = {"ATemp1", 2, "U16"};
+        telemetry_values[82] = {"ATemp1", 2, "U16"};
+        telemetry_values[83] = {"ATemp1", 2, "U16"};
+        telemetry_values[84] = {"ATemp1", 2, "U16"};
 
         int x = 0;
         for (int i = 0; i < 69; i++) {
