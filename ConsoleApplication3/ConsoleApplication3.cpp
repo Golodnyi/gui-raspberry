@@ -418,7 +418,7 @@ int main() {
         uint8_t crc8 = (uint8_t) buff_3_3[1];
         cout << crc8 << endl;
 
-		/*unsigned char buff_val_3_1 = crc8_calc((unsigned char *)buff_3_1, 2);
+		unsigned char buff_val_3_1 = crc8_calc((unsigned char *)buff_3_1, 2);
 		unsigned char buff_val_3_2 = crc8_calc((unsigned char *)&buff_3_2, bitfield.size());
 		unsigned char buff_val_3 = buff_val_3_1 + buff_val_3_2;
 		if (buff_val_3 == crc8) {
@@ -436,8 +436,8 @@ int main() {
 			//copy(buff_3_3, buff_3_3, answer_3 + 3);
 
 			int bytes_3 = send(client_socket, answer_3, 3, 0);
-			cout << "Send " << bytes_3 << " bytes" << endl;*/
+			cout << "Send " << bytes_3 << " bytes" << endl;
 
     }
-
+	closesocket(client_socket);
 }
