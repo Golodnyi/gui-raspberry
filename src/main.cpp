@@ -1,5 +1,3 @@
-// ConsoleApplication3.cpp: определяет точку входа для консольного приложения.
-//
 #include <iostream>
 #include <bitset>
 #include <vector>
@@ -24,10 +22,11 @@ extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 
-extern int gui_init(int argc, char *argv[]);
+extern int gui_init(int argc, char *argv[], vector<char> data);
 
 int main(int argc, char *argv[]) {
-    int gui = gui_init(argc, argv);
+    vector<char> temp_vector; // длина телеметрических данных + преамбула 2 байта
+    int gui = gui_init(argc, argv, temp_vector);
 
     if (gui != 0) {
         return gui;
@@ -390,7 +389,6 @@ int main(int argc, char *argv[]) {
         result = recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
         char index[2];
         copy(buff_3_1, buff_3_1 + 2, index);            // перенесли первые 2 байта из сообщения
-        vector<char> temp_vector(2); // длина телеметрических данных + преамбула 2 байта
         for (int i = 0; i < 2; i++) {
             cout << index[i];
             temp_vector[i] = buff_3_1[i];
