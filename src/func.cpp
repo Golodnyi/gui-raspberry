@@ -1,9 +1,5 @@
 #include <iostream>
 
-#if defined(_WIN32) || defined(WIN32)
-#include "stdafx.h"
-#endif
-
 unsigned char xor_sum(unsigned char *buffer, unsigned int length) {
     unsigned char temp_sum = 0;
 

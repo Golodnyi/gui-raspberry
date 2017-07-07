@@ -1,21 +1,11 @@
 #include <iostream>
 #include <bitset>
 #include <vector>
-
-#if defined(_WIN32) || defined(WIN32)
-#include "stdafx.h"
-#pragma comment(lib, "Ws2_32.lib")   //библиотека для сокетов
-#include <conio.h>                   //для использования getch()
-#include <winsock2.h>
-#include <WS2tcpip.h>
-#else
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <zconf.h>
 
-#endif
 using namespace std;
 
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
@@ -128,23 +118,10 @@ int main(int argc, char *argv[]) {
     telemetry_values[83] = {"ATemp1", 2, "U16"};
     telemetry_values[84] = {"ATemp1", 2, "U16"};
     int result;
-#if defined(_WIN32) || defined(WIN32)
-    cout << "Windows" << endl;
-    WSADATA wsaData;
-    result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if (result != 0)                // проверка на ошибку загрузки
-    {
-        cerr << "WSAStartup failed: " << result << endl;
-        return result;
-    }
-#else
-    cout << "Linux" << endl;
-#endif
+
     struct addrinfo *addr = NULL;        // структура, хранящая информацию об IP-адресе  слущающего сокета
     struct addrinfo hints;                // шаблон для инициализации структуры адреса
-#if defined(_WIN32) || defined(WIN32)
-    ZeroMemory(&hints, sizeof(hints));
-#endif
+
 
     hints.ai_family = AF_INET;            // использование сети для работы с сокетами
     hints.ai_socktype = SOCK_STREAM;    // Задаем потоковый тип сокета
@@ -155,9 +132,6 @@ int main(int argc, char *argv[]) {
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
-#if defined(_WIN32) || defined(WIN32)
-        WSACleanup();                    // выгрузка библиотеки Ws2_32.dll
-#endif
         return 1;                        // выход из программы
     }
 
@@ -475,10 +449,6 @@ int main(int argc, char *argv[]) {
         int bytes_3 = send(client_socket, answer_3, 3, 0);
         cout << "Send " << bytes_3 << " bytes" << endl;
     }
-#if defined(_WIN32) || defined(WIN32)
-    closesocket(client_socket);
-#else
     close(client_socket);
-#endif
     return 0;
 }
