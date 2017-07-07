@@ -4,11 +4,11 @@
 #include <QtGui>
 #include <QTableWidget>
 
-#define ROWS 10 // количество строк
-#define COLS 10 // количество столбцов таблицы
+#define ROWS 10 // РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє
+#define COLS 10 // РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚РѕР»Р±С†РѕРІ С‚Р°Р±Р»РёС†С‹
 using namespace std;
 int gui_init(int argc, char *argv[], vector<char> data) {
-    QApplication app(argc, argv); //(постоянная) приложение
+    QApplication app(argc, argv); //(РїРѕСЃС‚РѕСЏРЅРЅР°СЏ) РїСЂРёР»РѕР¶РµРЅРёРµ
     QTableWidget table(ROWS, COLS);
     table.setGridStyle(Qt::SolidLine);
     table.setFont(QFont("Times", 14, QFont::Normal));

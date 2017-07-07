@@ -50,8 +50,8 @@ const unsigned char crc8_table[256] =
 };
 unsigned char crc8_calc
 (
-	unsigned char *lp_block, /* (вх) указатель на буфер с данными */
-	unsigned int len /* (вх) количество байт для подсчета */
+	unsigned char *lp_block, /* (РІС…) СѓРєР°Р·Р°С‚РµР»СЊ РЅР° Р±СѓС„РµСЂ СЃ РґР°РЅРЅС‹РјРё */
+	unsigned int len /* (РІС…) РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р°Р№С‚ РґР»СЏ РїРѕРґСЃС‡РµС‚Р° */
 )
 {
 	unsigned char crc = 0xFF;
