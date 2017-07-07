@@ -134,6 +134,7 @@ int flex(int argc, char *argv[], vector<char> temp_vector) {
 
     int client_socket;
     for (;;) {
+        temp_vector.clear();
         char head[16];
         client_socket = accept(listen_socket, NULL, NULL);
         result = recv(client_socket, head, 16, 0);        //связали сокет с head
