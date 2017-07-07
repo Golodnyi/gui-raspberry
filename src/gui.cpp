@@ -7,7 +7,7 @@
 #define ROWS 10 // количество строк
 #define COLS 10 // количество столбцов таблицы
 using namespace std;
-int gui_init(int argc, char *argv[], vector<char> data) {
+int gui_init(int argc, char *argv[], vector<char> temp_vector) {
     QApplication app(argc, argv); //(постоянная) приложение
     QTableWidget table(ROWS, COLS);
     table.setGridStyle(Qt::SolidLine);

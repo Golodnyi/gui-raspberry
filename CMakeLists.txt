@@ -21,7 +21,7 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 # Executables fail to build with Qt 5 in the default configuration
 # without -fPIE. We add that here.
 set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
-set(SOURCE_FILES src/main.cpp src/gui.cpp src/func.cpp)
+set(SOURCE_FILES src/main.cpp src/gui.cpp src/func.cpp src/flex.cpp)
 add_executable(guiraspberry ${SOURCE_FILES})
 # The Qt5Widgets_LIBRARIES variable also includes QtGui and QtCore
 target_link_libraries(guiraspberry ${Qt5Widgets_LIBRARIES})
