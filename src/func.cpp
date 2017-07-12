@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 unsigned char xor_sum(unsigned char *buffer, unsigned int length) {
     unsigned char temp_sum = 0;

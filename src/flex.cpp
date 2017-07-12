@@ -120,7 +120,7 @@ void * flex(void *arg) {
     hints.ai_protocol = IPPROTO_TCP;    // Используем протокол TCP
     hints.ai_flags = AI_PASSIVE;
 
-    result = getaddrinfo(NULL, "9001", &hints, &addr);    // задаем фактический адрес: IP и номер порта
+    result = getaddrinfo(NULL, "9002", &hints, &addr);    // задаем фактический адрес: IP и номер порта
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
@@ -356,9 +356,10 @@ void * flex(void *arg) {
         result = recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
         char index[2];
         copy(buff_3_1, buff_3_1 + 2, index);            // перенесли первые 2 байта из сообщения
+        temp_vector.resize(2);
         for (int i = 0; i < 2; i++) {
             cout << index[i];
-            temp_vector.data()[i] = buff_3_1[i];
+            temp_vector[i] = buff_3_1[i];
         }
         cout << endl;
 

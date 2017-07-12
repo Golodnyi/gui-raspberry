@@ -4,14 +4,20 @@
 #include <QtGui>
 #include <QTableWidget>
 #include <pthread.h>
-#include <pthread.h>
+#include <unistd.h>
 
 #define ROWS 10 // количество строк
 #define COLS 10 // количество столбцов таблицы
 using namespace std;
 
 extern void * flex(void *arg);
-
+void * draw(void *arg) {
+    vector<char> temp_vector = *(vector<char> *) arg;
+    while (true) {
+        cout << temp_vector.size() << endl;
+        usleep(1000000);
+    }
+}
 int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
     QTableWidget table(ROWS, COLS);
@@ -27,8 +33,15 @@ int gui_init(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    pthread_t thread2;
+    int result2 = pthread_create(&thread2, NULL, draw, &temp_vector);
+    if (result2 != 0) {
+        perror("Создание второго потока!");
+        return EXIT_FAILURE;
+    }
+    QTableWidgetItem *item = new QTableWidgetItem;
+
     for (int i = 0; i < COLS; i++) {
-        QTableWidgetItem *item = new QTableWidgetItem;
         item->setText(QString(QChar('A' + i)));
         table.setHorizontalHeaderItem(i, item);
         for (int j = 0; j < ROWS; j++) {
@@ -38,8 +51,6 @@ int gui_init(int argc, char *argv[]) {
             table.setItem(j, i, item);
         }
     }
-    //table.resizeRowsToContents();
-    //table.resizeColumnsToContents();
     table.show();
     return app.exec();
 }
