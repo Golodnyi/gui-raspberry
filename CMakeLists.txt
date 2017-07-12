@@ -10,7 +10,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Widgets finds its own dependencies (QtGui and QtCore).
 find_package(Qt5Widgets REQUIRED)
-
+find_package(Threads)
 # The Qt5Widgets_INCLUDES also includes the include directories for
 # dependencies QtCore and QtGui
 include_directories(${Qt5Widgets_INCLUDES})
@@ -20,11 +20,10 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 
 # Executables fail to build with Qt 5 in the default configuration
 # without -fPIE. We add that here.
-set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} -lpthread")
 set(SOURCE_FILES src/main.cpp src/gui.cpp src/func.cpp src/flex.cpp)
 add_executable(guiraspberry ${SOURCE_FILES})
 # The Qt5Widgets_LIBRARIES variable also includes QtGui and QtCore
-target_link_libraries(guiraspberry ${Qt5Widgets_LIBRARIES})
-
+target_link_libraries(guiraspberry ${Qt5Widgets_LIBRARIES} pthread)
 
 

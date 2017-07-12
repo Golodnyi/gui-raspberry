@@ -3,21 +3,29 @@
 #include <QApplication>
 #include <QtGui>
 #include <QTableWidget>
+#include <pthread.h>
+#include <pthread.h>
 
 #define ROWS 10 // количество строк
 #define COLS 10 // количество столбцов таблицы
 using namespace std;
 
-extern int flex(vector<char> *temp_vector);
+extern void * flex(void *arg);
 
-int gui_init(int argc, char *argv[], vector<char> *temp_vector) {
+int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
     QTableWidget table(ROWS, COLS);
     table.setGridStyle(Qt::SolidLine);
     table.setFont(QFont("Times", 14, QFont::Normal));
     table.showMaximized();
 
-    flex(temp_vector);
+    vector<char> temp_vector;
+    pthread_t thread;
+    int result = pthread_create(&thread, NULL, flex, &temp_vector);
+    if (result != 0) {
+        perror("Создание первого потока!");
+        return EXIT_FAILURE;
+    }
 
     for (int i = 0; i < COLS; i++) {
         QTableWidgetItem *item = new QTableWidgetItem;
