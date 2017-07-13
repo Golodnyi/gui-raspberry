@@ -25,7 +25,6 @@ int gui_init(int argc, char *argv[]) {
     QTableWidget table(ROWS, COLS);
     table.setGridStyle(Qt::SolidLine);
     table.setFont(QFont("Times", 14, QFont::Normal));
-    table.showMaximized();
 
     vector<char> temp_vector;
     pthread_t thread;
@@ -55,6 +54,6 @@ int gui_init(int argc, char *argv[]) {
             table.setItem(j, i, item);
         }
     }
-    table.show();
+    table.showMaximized();
     return app.exec();
 }
