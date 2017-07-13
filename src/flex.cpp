@@ -17,6 +17,7 @@ struct dataStruct {
     string type;
     string name; // название датчика на русском (температура блока цилиндров)
     string unit; // мера измерения (км в час, цельясия...)
+    bool enable; // значение из сокета
     string value; // значение из сокета
 
 };
@@ -211,7 +212,9 @@ void * flex(void *arg) {
         for (int i = 0; i < bitfield_size; i++) {
             for (int j = 7; j >= 0; j--) {
                 uint8_t tbyte = buff_2[i + 10];
-                bitfield[g] = (bool) (tbyte & (1 << j));
+                bool state = (bool) (tbyte & (1 << j));
+                bitfield[g] = state;
+                telemetry_values[g].enable = state;
                 cout << bitfield[g];
                 if (g >= 68) {
                     break;
