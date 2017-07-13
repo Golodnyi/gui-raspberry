@@ -12,9 +12,11 @@ using namespace std;
 
 extern void * flex(void *arg);
 void * draw(void *arg) {
-    vector<char> temp_vector = *(vector<char> *) arg;
+    vector<char> *const temp_vector = (vector<char> *)arg;
+
     while (true) {
-        cout << temp_vector.size() << endl;
+        cout << "Draw size: " << temp_vector->size() << endl;
+        cout << "Draw address: " << temp_vector << endl;
         usleep(1000000);
     }
 }

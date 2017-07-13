@@ -13,7 +13,8 @@ extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 
 void * flex(void *arg) {
-    vector<char> temp_vector =  * (vector<char> *) arg;
+    vector<char> *const temp_vector = (vector<char> *)arg;
+
     struct values {
         string value;
         short int byte;
@@ -120,7 +121,7 @@ void * flex(void *arg) {
     hints.ai_protocol = IPPROTO_TCP;    // Используем протокол TCP
     hints.ai_flags = AI_PASSIVE;
 
-    result = getaddrinfo(NULL, "9002", &hints, &addr);    // задаем фактический адрес: IP и номер порта
+    result = getaddrinfo(NULL, "9000", &hints, &addr);    // задаем фактический адрес: IP и номер порта
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
@@ -135,7 +136,7 @@ void * flex(void *arg) {
 
     int client_socket;
     for (;;) {
-        temp_vector.clear();
+        temp_vector->clear();
         char head[16];
         client_socket = accept(listen_socket, NULL, NULL);
         result = recv(client_socket, head, 16, 0);        //связали сокет с head
@@ -356,10 +357,10 @@ void * flex(void *arg) {
         result = recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
         char index[2];
         copy(buff_3_1, buff_3_1 + 2, index);            // перенесли первые 2 байта из сообщения
-        temp_vector.resize(2);
+        temp_vector->resize(2);
         for (int i = 0; i < 2; i++) {
             cout << index[i];
-            temp_vector[i] = buff_3_1[i];
+            temp_vector->data()[i] = buff_3_1[i];
         }
         cout << endl;
 
@@ -415,7 +416,7 @@ void * flex(void *arg) {
                 } else {
                     cout << "mistake" << endl;
                 }
-                temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
+                temp_vector->insert(temp_vector->end(), buff_3_2.begin(), buff_3_2.end());
                 buff_3_2.clear();
             }
         }
@@ -425,7 +426,7 @@ void * flex(void *arg) {
         uint8_t crc8 = (uint8_t) buff_3_3[0];
         cout << crc8 << endl;
 
-        unsigned char buff_val_3_2 = crc8_calc((unsigned char *) temp_vector.data(), temp_vector.size());
+        unsigned char buff_val_3_2 = crc8_calc((unsigned char *) temp_vector->data(), temp_vector->size());
         if (buff_val_3_2 == crc8) {
             cout << "crc8 success" << endl;
         } else {
@@ -442,6 +443,8 @@ void * flex(void *arg) {
 
         int bytes_3 = send(client_socket, answer_3, 3, 0);
         cout << "Send " << bytes_3 << " bytes" << endl;
+        cout << "Flex size: " << temp_vector->size() << endl;
+        cout << "Flex address: " << temp_vector << endl;
     }
     close(client_socket);
     exit(0);
