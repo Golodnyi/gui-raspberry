@@ -135,10 +135,10 @@ void * flex(void *arg) {
     listen(listen_socket, SOMAXCONN);    // ожидание соединения
 
     int client_socket;
-    for (;;) {
+    while (client_socket = accept(listen_socket, NULL, NULL)) {
         temp_vector->clear();
         char head[16];
-        client_socket = accept(listen_socket, NULL, NULL);
+
         result = recv(client_socket, head, 16, 0);        //связали сокет с head
 
         char preamble[4];

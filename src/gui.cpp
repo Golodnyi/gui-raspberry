@@ -29,18 +29,20 @@ int gui_init(int argc, char *argv[]) {
 
     vector<char> temp_vector;
     pthread_t thread;
-    int result = pthread_create(&thread, NULL, flex, &temp_vector);
+    int result = pthread_create(&thread, NULL, flex, (void*)&temp_vector);
     if (result != 0) {
         perror("Создание первого потока!");
         return EXIT_FAILURE;
     }
 
     pthread_t thread2;
-    int result2 = pthread_create(&thread2, NULL, draw, &temp_vector);
+    int result2 = pthread_create(&thread2, NULL, draw, (void*)&temp_vector);
     if (result2 != 0) {
         perror("Создание второго потока!");
         return EXIT_FAILURE;
     }
+
+
     QTableWidgetItem *item = new QTableWidgetItem;
 
     for (int i = 0; i < COLS; i++) {
