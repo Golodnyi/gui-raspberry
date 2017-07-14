@@ -6,8 +6,6 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#define ROWS 10 // количество строк
-#define COLS 10 // количество столбцов таблицы
 using namespace std;
 struct dataStruct {
     string alias; // англ название (numPage)
@@ -118,10 +116,7 @@ int gui_init(int argc, char *argv[]) {
     telemetry_values[82] = {"ATemp1", 2, "U16", "название", "км/ч", false};
     telemetry_values[83] = {"ATemp1", 2, "U16", "название", "км/ч", false};
     telemetry_values[84] = {"ATemp1", 2, "U16", "название", "км/ч", false};
-    QApplication app(argc, argv); //(постоянная) приложение
-    QTableWidget table(ROWS, COLS);
-    table.setGridStyle(Qt::SolidLine);
-    table.setFont(QFont("Times", 14, QFont::Normal));
+
 
     pthread_t thread;
     int result = pthread_create(&thread, NULL, flex, &telemetry_values);
@@ -137,19 +132,35 @@ int gui_init(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    pthread_t thread3;
+    int result3 = pthread_create(&thread3, NULL, draw, &telemetry_values);
+    if (result3 != 0) {
+        perror("Создание третьего потока!");
+        return EXIT_FAILURE;
+    }
+    else {
+        QApplication app(argc, argv); //(постоянная) приложение
+        QTableWidget *table = new QTableWidget; // создаем окно таблицы
+        table->setRowCount(22); // указываем количество строк
+        table->setColumnCount(4); // указываем количество столбцов
+        table->setGridStyle(Qt::SolidLine);
+        table->setFont(QFont("Times", 14, QFont::Normal));
 
-    QTableWidgetItem *item = new QTableWidgetItem;
 
-    for (int i = 0; i < COLS; i++) {
-        item->setText(QString(QChar('A' + i)));
-        table.setHorizontalHeaderItem(i, item);
-        for (int j = 0; j < ROWS; j++) {
-            QTableWidgetItem *item = new QTableWidgetItem;
-            item->setText(QString("(%1, %2)")
-                                  .arg(QChar('A' + i)).arg(j + 1));
-            table.setItem(j, i, item);
+        int i = 0;
+        for (int row = 0; row < table->rowCount(); row++) {
+            for (int column = 0; column < table->columnCount(); column++) {
+                QTableWidgetItem *item = new QTableWidgetItem(); // выделяем память под ячейку
+                item->setText(QString("%1_%2_%3").arg(row + 1).arg(column + 1).arg(i));
+                i += 1;
+                //item->setText(QString(telemetry_values[i].name);
+                //item->setText(QString("%1_%2").QString(telemetry_values[i].name).QString(telemetry_values[i].value)); // вставляем текст
+                table->setItem(row, column, item); // вставляем ячейку
+                }
+            }
+        table->resizeColumnsToContents();
+        table->resizeRowsToContents();
+            table->showMaximized();
+            return app.exec();
         }
     }
-    table.showMaximized();
-    return app.exec();
-}
