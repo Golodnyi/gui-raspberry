@@ -7,6 +7,7 @@
 #include <QListWidget>
 
 using namespace std;
+QListWidget *listWidget;
 struct dataStruct {
     string alias; // англ название (numPage)
     short int byte;
@@ -17,26 +18,28 @@ struct dataStruct {
     string value; // значение из сокета
 
 };
+
 extern void * flex(void *arg);
-void * draw(void *arg) {
-    QListWidget listWidget;
+
+void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
-    listWidget.showMaximized();
-    while (true){
-        listWidget.clear();
-        for (int i = 0; i < 85; i++) {
-            if (telemetry_values[i].enable) {
-                listWidget.insertItem(0, QString::fromStdString(telemetry_values[i].name)
-                                         + ": " + QString::fromStdString(telemetry_values[i].value)
-                                                  + ": " + QString::fromStdString(telemetry_values[i].unit));
-                cout << telemetry_values[i].value << endl;
-            }
+    cout << "update" << endl;
+    listWidget->clear();
+    for (int i = 0; i < 85; i++) {
+        if (telemetry_values[i].enable) {
+            listWidget->insertItem(0, QString::fromStdString(telemetry_values[i].name)
+                                     + ": " + QString::fromStdString(telemetry_values[i].value)
+                                              + ": " + QString::fromStdString(telemetry_values[i].unit));
+            cout << telemetry_values[i].value << endl;
         }
-        usleep(1000000);
     }
+    cout << "end update" << endl;
 }
 int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
+    listWidget = new QListWidget;
+    listWidget->showFullScreen();
+
     dataStruct telemetry_values[85];
     telemetry_values[0] = {"numPage", 4, "U32", "Номер", "", false}; // 1 id записи в черном ящике
     telemetry_values[1] = {"Code", 2, "U16", "Код события", "", false}; // 2 код события
@@ -129,12 +132,6 @@ int gui_init(int argc, char *argv[]) {
     int result = pthread_create(&thread, NULL, flex, &telemetry_values);
     if (result != 0) {
         perror("Создание первого потока!");
-        return EXIT_FAILURE;
-    }
-    pthread_t thread2;
-    int result2 = pthread_create(&thread2, NULL, draw, &telemetry_values);
-    if (result2 != 0) {
-        perror("Создание второго потока!");
         return EXIT_FAILURE;
     }
 
