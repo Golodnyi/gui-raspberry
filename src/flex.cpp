@@ -43,13 +43,14 @@ void * flex(void *arg) {
     }
 
     int listen_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);    // принимающий сокет
-
+    cout << "socket start: " << result << endl;
     result = bind(listen_socket, addr->ai_addr,
                   (int) addr->ai_addrlen); // привязываем сокет на IP-адресс из getaddrinfo
     listen(listen_socket, SOMAXCONN);    // ожидание соединения
 
     int client_socket;
     while (client_socket = accept(listen_socket, NULL, NULL)) {
+        cout << "connect" << endl;
         temp_vector.clear();
         char head[16];
 

@@ -2,9 +2,9 @@
 #include <vector>
 #include <QApplication>
 #include <QtGui>
-#include <QTableWidget>
 #include <pthread.h>
 #include <unistd.h>
+#include <QListWidget>
 
 using namespace std;
 struct dataStruct {
@@ -19,10 +19,16 @@ struct dataStruct {
 };
 extern void * flex(void *arg);
 void * draw(void *arg) {
+    QListWidget listWidget;
     dataStruct* telemetry_values = (dataStruct *)arg;
-    while (true) {
+    listWidget.showMaximized();
+    while (true){
+        listWidget.clear();
         for (int i = 0; i < 85; i++) {
             if (telemetry_values[i].enable) {
+                listWidget.insertItem(0, QString::fromStdString(telemetry_values[i].name)
+                                         + ": " + QString::fromStdString(telemetry_values[i].value)
+                                                  + ": " + QString::fromStdString(telemetry_values[i].unit));
                 cout << telemetry_values[i].value << endl;
             }
         }
@@ -30,20 +36,21 @@ void * draw(void *arg) {
     }
 }
 int gui_init(int argc, char *argv[]) {
+    QApplication app(argc, argv); //(постоянная) приложение
     dataStruct telemetry_values[85];
-    telemetry_values[0] = {"numPage", 4, "U32", "название", "км/ч", false}; // 1 id записи в черном ящике
-    telemetry_values[1] = {"Code", 2, "U16", "название", "км/ч", false}; // 2 код события
-    telemetry_values[2] = {"Time", 4, "U32", "название", "км/ч", false}; // 3 время события
-    telemetry_values[3] = {"State", 1, "U8", "название", "км/ч", false}; // 4 статус устройства
-    telemetry_values[4] = {"Module1", 1, "U8", "название", "км/ч", false}; // 5 статус функциональных модулей 1
-    telemetry_values[5] = {"Module2", 1, "U8", "название", "км/ч", false}; // 6 статус функциональных модулей 2
-    telemetry_values[6] = {"GSM", 1, "U8", "название", "км/ч",}; // 7 уровень gsm
+    telemetry_values[0] = {"numPage", 4, "U32", "Номер", "", false}; // 1 id записи в черном ящике
+    telemetry_values[1] = {"Code", 2, "U16", "Код события", "", false}; // 2 код события
+    telemetry_values[2] = {"Time", 4, "U32", "Время", " сек.", false}; // 3 время события
+    telemetry_values[3] = {"State", 1, "U8", "Состояние", "", false}; // 4 статус устройства
+    telemetry_values[4] = {"Module1", 1, "U8", "Модуль1", "", false}; // 5 статус функциональных модулей 1
+    telemetry_values[5] = {"Module2", 1, "U8", "Модуль2", "", false}; // 6 статус функциональных модулей 2
+    telemetry_values[6] = {"GSM", 1, "U8", "GSM", "",}; // 7 уровень gsm
     telemetry_values[7] = {"StateGauge", 1, "U8", "название", "км/ч", false}; // 8 состояние навигационного датчика GPS/Глонасс
     telemetry_values[8] = {"LastTime", 4, "U32", "название", "км/ч", false}; // 9 время последних валидных координат
     telemetry_values[9] = {"Lat", 4, "I32", "название", "км/ч", false}; // 10 последняя валидная широта
     telemetry_values[10] = {"Lon", 4, "I32", "название", "км/ч", false}; // 11 долгота
     telemetry_values[11] = {"Alt", 4, "I32", "название", "км/ч", false}; // 12 высота
-    telemetry_values[12] = {"Speed", 4, "Float", "название", "км/ч", false}; // 13 скорость
+    telemetry_values[12] = {"Speed", 4, "Float", "Скорость", "км/ч", false}; // 13 скорость
     telemetry_values[13] = {"Course", 2, "U16", "название", "км/ч", false};  // 14 курс
     telemetry_values[14] = {"Mileage", 4, "Float", "название", "км/ч", false}; // 15 текущий пробег
     telemetry_values[15] = {"Way", 4, "Float", "название", "км/ч", false};  // 16 последний отрезок пути
@@ -124,7 +131,6 @@ int gui_init(int argc, char *argv[]) {
         perror("Создание первого потока!");
         return EXIT_FAILURE;
     }
-
     pthread_t thread2;
     int result2 = pthread_create(&thread2, NULL, draw, &telemetry_values);
     if (result2 != 0) {
@@ -132,35 +138,5 @@ int gui_init(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    pthread_t thread3;
-    int result3 = pthread_create(&thread3, NULL, draw, &telemetry_values);
-    if (result3 != 0) {
-        perror("Создание третьего потока!");
-        return EXIT_FAILURE;
-    }
-    else {
-        QApplication app(argc, argv); //(постоянная) приложение
-        QTableWidget *table = new QTableWidget; // создаем окно таблицы
-        table->setRowCount(22); // указываем количество строк
-        table->setColumnCount(4); // указываем количество столбцов
-        table->setGridStyle(Qt::SolidLine);
-        table->setFont(QFont("Times", 14, QFont::Normal));
-
-
-        int i = 0;
-        for (int row = 0; row < table->rowCount(); row++) {
-            for (int column = 0; column < table->columnCount(); column++) {
-                QTableWidgetItem *item = new QTableWidgetItem(); // выделяем память под ячейку
-                item->setText(QString("%1_%2_%3").arg(row + 1).arg(column + 1).arg(i));
-                i += 1;
-                //item->setText(QString(telemetry_values[i].name);
-                //item->setText(QString("%1_%2").QString(telemetry_values[i].name).QString(telemetry_values[i].value)); // вставляем текст
-                table->setItem(row, column, item); // вставляем ячейку
-                }
-            }
-        table->resizeColumnsToContents();
-        table->resizeRowsToContents();
-            table->showMaximized();
-            return app.exec();
-        }
-    }
+    return app.exec();
+}
