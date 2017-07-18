@@ -1,9 +1,6 @@
 #include <iostream>
-#include <vector>
 #include <QApplication>
 #include <QtGui>
-#include <pthread.h>
-#include <unistd.h>
 #include <QListWidget>
 
 
