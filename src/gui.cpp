@@ -2,9 +2,12 @@
 #include <QApplication>
 #include <QtGui>
 #include <QListWidget>
+#include <QVector>
 
 
 using namespace std;
+
+
 QListWidget *listWidget;
 struct dataStruct {
     string alias; // англ название (numPage)
@@ -143,6 +146,7 @@ int gui_init(int argc, char *argv[]) {
         perror("Создание первого потока!");
         return EXIT_FAILURE;
     }
+    qRegisterMetaType<QVector<int> >("QVector<int>");
 
     return app.exec();
 }
