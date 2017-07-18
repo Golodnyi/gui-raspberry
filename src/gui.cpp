@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <QListWidget>
 
+
 using namespace std;
 QListWidget *listWidget;
 struct dataStruct {
@@ -20,17 +21,24 @@ struct dataStruct {
 };
 
 extern void * flex(void *arg);
-
 void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
+    listWidget->setFont(QFont("Times", 14, QFont::Normal));
     listWidget->clear();
     for (int i = 0; i < 85; i++) {
         if (telemetry_values[i].enable) {
-            listWidget->insertItem(0, QString::fromStdString(telemetry_values[i].name)
-                                     + ": " + QString::fromStdString(telemetry_values[i].value)
-                                              + ": " + QString::fromStdString(telemetry_values[i].unit));
+            QListWidgetItem *Item = new QListWidgetItem;
+            Item->setText(QString::fromStdString(telemetry_values[i].name)
+                          + ": " + QString::fromStdString(telemetry_values[i].value)
+                          + " " + QString::fromStdString(telemetry_values[i].unit));
+            listWidget->insertItem(i, Item);
             cout << telemetry_values[i].value << endl;
+            if (i == 2) {
+                Item->setBackground(Qt::red);
+            } else {
+                Item->setBackground(Qt::green);
+            }
         }
     }
     cout << "end update" << endl;
@@ -39,7 +47,6 @@ int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
     listWidget = new QListWidget;
     listWidget->showFullScreen();
-
     dataStruct telemetry_values[85];
     telemetry_values[0] = {"numPage", 4, "U32", "Номер", "", false}; // 1 id записи в черном ящике
     telemetry_values[1] = {"Code", 2, "U16", "Код события", "", false}; // 2 код события

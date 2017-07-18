@@ -39,7 +39,7 @@ void *flex(void *arg) {
     hints.ai_protocol = IPPROTO_TCP;    // Используем протокол TCP
     hints.ai_flags = AI_PASSIVE;
 
-    result = getaddrinfo(NULL, "9002", &hints, &addr);    // задаем фактический адрес: IP и номер порта
+    result = getaddrinfo(NULL, "9000", &hints, &addr);    // задаем фактический адрес: IP и номер порта
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
@@ -378,6 +378,7 @@ void *flex(void *arg) {
 
         int bytes_3 = send(client_socket, answer_3, 3, 0);
         cout << "Send " << bytes_3 << " bytes" << endl;
+
         update(telemetry_values);
     }
     close(client_socket);
