@@ -2,13 +2,13 @@
 #include <QApplication>
 #include <QtGui>
 #include <QListWidget>
-#include <QVector>
-
+#include <QComboBox>
+#include <QGridLayout>
 
 using namespace std;
 
-
 QListWidget *listWidget;
+QListWidget *listWidget1;
 struct dataStruct {
     string alias; // англ название (numPage)
     short int byte;
@@ -25,7 +25,8 @@ void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
     listWidget->clear();
-    for (int i = 0; i < 85; i++) {
+    listWidget1->clear();
+    for (int i = 0; i < 43; i++) {
         if (telemetry_values[i].enable) {
             QListWidgetItem *Item = new QListWidgetItem;
             Item->setText(QString::fromStdString(telemetry_values[i].name)
@@ -44,14 +45,29 @@ void * update(void *arg) {
 }
 int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
+    QWidget *window = new QWidget;
+
     listWidget = new QListWidget;
     listWidget->setFont(QFont("Times", 16, QFont::Normal));
-
     QListWidgetItem *Item = new QListWidgetItem;
     Item->setText(QString::fromStdString("Ожидание данных"));
     listWidget->insertItem(0, Item);
 
-    listWidget->showFullScreen();
+    listWidget1 = new QListWidget;
+    listWidget1->setFont(QFont("Times", 16, QFont::Normal));
+    QListWidgetItem *Item1 = new QListWidgetItem;
+    Item1->setText(QString::fromStdString("Ожидание данных"));
+    listWidget1->insertItem(0, Item1);
+
+
+
+    QGridLayout *MainLayout = new QGridLayout();
+    MainLayout->addWidget(listWidget, 0, 0);
+    MainLayout->addWidget(listWidget1, 0, 1);
+
+    window->setLayout(MainLayout);
+    window->showFullScreen();
+
     dataStruct telemetry_values[85];
     telemetry_values[0] = {"numPage", 4, "U32", "Номер", "", false}; // 1 id записи в черном ящике
     telemetry_values[1] = {"Code", 2, "U16", "Код события", "", false}; // 2 код события
@@ -146,6 +162,8 @@ int gui_init(int argc, char *argv[]) {
         perror("Создание первого потока!");
         return EXIT_FAILURE;
     }
+    //pthread_cancel(thread);
+
     qRegisterMetaType<QVector<int> >("QVector<int>");
 
     return app.exec();
