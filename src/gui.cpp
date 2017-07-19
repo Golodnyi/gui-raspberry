@@ -24,21 +24,44 @@ extern void * flex(void *arg);
 void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
+    short int x=0;
+    short int y=0;
     listWidget->clear();
     listWidget1->clear();
     for (int i = 0; i < 43; i++) {
         if (telemetry_values[i].enable) {
-            QListWidgetItem *Item = new QListWidgetItem;
-            Item->setText(QString::fromStdString(telemetry_values[i].name)
-                          + ": " + QString::fromStdString(telemetry_values[i].value)
-                          + " " + QString::fromStdString(telemetry_values[i].unit));
-            listWidget->insertItem(i, Item);
-            cout << telemetry_values[i].value << endl;
-            if (i == 2) {
-                Item->setBackground(Qt::red);
-            } else {
-                Item->setBackground(Qt::green);
+            x=listWidget->count();
+            y=listWidget1->count();
+            if(x>y){
+                QListWidgetItem *Item1 = new QListWidgetItem;
+                Item1->setText(QString::fromStdString(telemetry_values[i].name)
+                                  + ": " + QString::fromStdString(telemetry_values[i].value)
+                                  + " " + QString::fromStdString(telemetry_values[i].unit));
+
+                listWidget1->insertItem(i, Item1);
+                if (i == 2) {
+                    Item1->setBackground(Qt::red);
+                } else {
+                    Item1->setBackground(Qt::green);
+                }
             }
+            else {
+                QListWidgetItem *Item = new QListWidgetItem;
+                Item->setText(QString::fromStdString(telemetry_values[i].name)
+                              + ": " + QString::fromStdString(telemetry_values[i].value)
+                              + " " + QString::fromStdString(telemetry_values[i].unit));
+
+                listWidget->insertItem(i, Item);
+                if (i == 2) {
+                    Item->setBackground(Qt::red);
+                } else {
+                    Item->setBackground(Qt::green);
+                }
+            }
+            cout << telemetry_values[i].value << endl;
+            cout <<"строк в 1 списке: " << x << endl;
+            cout <<"строк во 2 списке: " << y << endl;
+
         }
     }
     cout << "end update" << endl;
