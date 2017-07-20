@@ -16,8 +16,8 @@ extern void *update(void *arg);
 
 struct dataStruct {
     string alias; // англ название (numPage)
-    short int byte;
-    string type;
+    short int byte; // кол-во байт
+    string type; // тип предоставления данных
     string name; // название датчика на русском (температура блока цилиндров)
     string unit; // мера измерения (км в час, цельясия...)
     bool enable; // значение из сокета
@@ -39,7 +39,7 @@ void *flex(void *arg) {
     hints.ai_protocol = IPPROTO_TCP;    // Используем протокол TCP
     hints.ai_flags = AI_PASSIVE;
 
-    result = getaddrinfo(NULL, "9003", &hints, &addr);    // задаем фактический адрес: IP и номер порта
+    result = getaddrinfo(NULL, "9000", &hints, &addr);    // задаем фактический адрес: IP и номер порта
     if (result != 0)                    // проверка на ошибку инициализации адресса
     {
         cerr << "getaddrinfo failed: " << result << endl;
@@ -380,6 +380,7 @@ void *flex(void *arg) {
         cout << "Send " << bytes_3 << " bytes" << endl;
 
         update(telemetry_values);
+
     }
     close(client_socket);
     exit(0);

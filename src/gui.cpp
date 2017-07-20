@@ -59,8 +59,6 @@ void * update(void *arg) {
                 }
             }
             cout << telemetry_values[i].value << endl;
-            cout <<"строк в 1 списке: " << x << endl;
-            cout <<"строк во 2 списке: " << y << endl;
 
         }
     }
@@ -181,11 +179,13 @@ int gui_init(int argc, char *argv[]) {
 
     pthread_t thread;
     int result = pthread_create(&thread, NULL, flex, &telemetry_values);
-    if (result != 0) {
-        perror("Создание первого потока!");
-        return EXIT_FAILURE;
+    {
+        if (result != 0) {
+            perror("Создание первого потока!");
+            return EXIT_FAILURE;
+        }
+        pthread_detach(thread);
     }
-    //pthread_cancel(thread);
 
     qRegisterMetaType<QVector<int> >("QVector<int>");
 
