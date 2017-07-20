@@ -24,7 +24,11 @@ struct dataStruct {
     string value; // значение из сокета
 
 };
-
+int client_socket;
+void close_socket() {
+    close(client_socket);
+    cout << "Close socket" << endl;
+}
 void *flex(void *arg) {
     dataStruct *telemetry_values = (dataStruct *) arg;
     vector<char> temp_vector;
@@ -52,7 +56,6 @@ void *flex(void *arg) {
                   (int) addr->ai_addrlen); // привязываем сокет на IP-адресс из getaddrinfo
     listen(listen_socket, SOMAXCONN);    // ожидание соединения
 
-    int client_socket;
     while (client_socket = accept(listen_socket, NULL, NULL)) {
         cout << "connect" << endl;
         temp_vector.clear();
@@ -382,6 +385,6 @@ void *flex(void *arg) {
         update(telemetry_values);
 
     }
-    close(client_socket);
+    close_socket();
     exit(0);
 }

@@ -21,6 +21,7 @@ struct dataStruct {
 };
 
 extern void * flex(void *arg);
+extern void close_socket();
 void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
@@ -189,5 +190,7 @@ int gui_init(int argc, char *argv[]) {
 
     qRegisterMetaType<QVector<int> >("QVector<int>");
 
-    return app.exec();
+    int code = app.exec();
+    close_socket();
+    return code;
 }
