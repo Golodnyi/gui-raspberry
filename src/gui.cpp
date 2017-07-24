@@ -38,9 +38,9 @@ void * update(void *arg) {
             y=listWidget1->count();
             if(x>y){
                 QListWidgetItem *Item1 = new QListWidgetItem;
-                Item1->setText(QString(telemetry_values[i].name)
-                                  + ": " + QString(telemetry_values[i].value)
-                                  + " " + QString(telemetry_values[i].unit));
+                Item1->setText((telemetry_values[i].name)
+                                  + ": " + (telemetry_values[i].value)
+                                  + " " + (telemetry_values[i].unit));
 
                 listWidget1->insertItem(i, Item1);
                 if (i == 2) {
@@ -51,9 +51,9 @@ void * update(void *arg) {
             }
             else {
                 QListWidgetItem *Item = new QListWidgetItem;
-                Item->setText(QString(telemetry_values[i].name)
-                              + ": " + QString(telemetry_values[i].value)
-                              + " " + QString(telemetry_values[i].unit));
+                Item->setText((telemetry_values[i].name)
+                              + ": " + (telemetry_values[i].value)
+                              + " " + (telemetry_values[i].unit));
 
                 listWidget->insertItem(i, Item);
                 if (i == 2) {

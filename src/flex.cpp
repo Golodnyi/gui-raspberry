@@ -304,15 +304,13 @@ void *flex(void *arg) {
                     if (telemetry_values[i].type == "I32") {
                         int32_t a = ((int8_t) buff_3_2[3] << 24) + ((int8_t) buff_3_2[2] << 16) +
                                     ((int8_t) buff_3_2[1] << 8) + (int8_t) buff_3_2[0];
-                        string a1 = to_string(a);
-                        telemetry_values[i].value = QString::fromStdString(a1);
+                        telemetry_values[i].value = QString::fromStdString(to_string(a));
                         cout << telemetry_values[i].alias.toStdString() << " = " << a << " I32";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "U32") {
                         uint32_t b = ((uint8_t) buff_3_2[3] << 24) + ((uint8_t) buff_3_2[2] << 16) +
                                      ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
-                        string b1 = to_string(b);
-                        telemetry_values[i].value = QString::fromStdString(b1);
+                        telemetry_values[i].value = QString::fromStdString(to_string(b));
                         cout << telemetry_values[i].alias.toStdString() << " = " << b << " U32";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "Float") {
@@ -320,8 +318,7 @@ void *flex(void *arg) {
                             speed.speedData[j] = buff_3_2[j];
                         }
                         float c = speed.speed;
-                        string c1 = to_string(c);
-                        telemetry_values[i].value = QString::fromStdString(c1);
+                        telemetry_values[i].value = QString::fromStdString(to_string(c));
                         cout << telemetry_values[i].alias.toStdString() << " = " << c << " Float";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else {
@@ -330,14 +327,12 @@ void *flex(void *arg) {
                 } else if (telemetry_values[i].byte == 2) {
                     if (telemetry_values[i].type == "I16") {
                         int16_t d = ((int8_t) buff_3_2[1] << 8) + (int8_t) buff_3_2[0];
-                        string d1 = to_string(d);
-                        telemetry_values[i].value = QString::fromStdString(d1);
+                        telemetry_values[i].value = QString::fromStdString(to_string(d));
                         cout << telemetry_values[i].alias.toStdString() << " = " << d << " I16";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "U16") {
                         uint16_t e = ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
-                        string e1 = to_string(e);
-                        telemetry_values[i].value = QString::fromStdString(e1);
+                        telemetry_values[i].value = QString::fromStdString(to_string(e));
                         cout << telemetry_values[i].alias.toStdString() << " = " << e << " U16";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else {
@@ -346,14 +341,12 @@ void *flex(void *arg) {
                 } else if (telemetry_values[i].byte == 1) {
                     if (telemetry_values[i].type == "I8") {
                         int8_t f = (int8_t) buff_3_2[0];
-                        string f1 = to_string(f);
-                        telemetry_values[i].value = QString::fromStdString(f1);
+                        telemetry_values[i].value = QString::fromStdString(to_string(f));
                         cout << telemetry_values[i].alias.toStdString() << " = " << f << " I8";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "U8") {
-                        uint8_t j = (uint8_t) buff_3_2[0];
-                        string j1 = to_string(j);
-                        telemetry_values[i].value = QString::fromStdString(j1);
+                        uint8_t g = (uint8_t) buff_3_2[0];
+                        telemetry_values[i].value = QString::fromStdString(to_string(g));
                         cout << telemetry_values[i].alias.toStdString() << " = " << g << " U8";
                         cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else {
