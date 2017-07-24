@@ -71,6 +71,11 @@ void * update(void *arg) {
 int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
 
+    dataStruct telemetry_values[85];
+
+    connect();
+    getTelemetry((dataStruct*) telemetry_values);
+
     QWidget *window = new QWidget;
     listWidget = new QListWidget;
     listWidget->setFont(QFont("Times", 16, QFont::Normal));
@@ -93,10 +98,6 @@ int gui_init(int argc, char *argv[]) {
     window->setLayout(MainLayout);
     window->showFullScreen();
 
-    dataStruct telemetry_values[85];
-
-    connect();
-    getTelemetry((dataStruct*) telemetry_values);
 
    /** dataStruct telemetry_values[85];
     telemetry_values[0] = {"numPage", 4, "U32", "Номер", "", false}; // 1 id записи в черном ящике

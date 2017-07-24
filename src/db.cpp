@@ -25,26 +25,22 @@ void connect() {
         cout << "Filed sql lite" << endl;
         exit(0);
     }
+    cout << "Connect to db" << endl;
 }
 
 dataStruct getTelemetry(dataStruct *telemetry_values) {
-    cout << "Connect to db" << endl;
+    cout << "Connect to telemetry" << endl;
     QSqlQuery query;
-    if (!query.exec(("SELECT * FROM `telemetry`"))) {
+    if (!query.exec(("SELECT alias,byte,type,name,unit FROM telemetry"))) {
         cout << "SQL Query filed: " <<  query.lastError().text().toStdString() << endl;
     }
     int i=0;
     while (query.next()) {
-        QString row = query.value(1).toString();
-        telemetry_values[i].alias=row;
-        int row_byte = query.value(2).toInt();
-        telemetry_values[i].byte=row_byte;
-        row = query.value(3).toString();
-        telemetry_values[i].type=row;
-        row = query.value(4).toString();
-        telemetry_values[i].name=row;
-        row = query.value(5).toString();
-        telemetry_values[i].unit=row;
+        telemetry_values[i].alias=query.value(0).toString();
+        telemetry_values[i].byte=query.value(1).toInt();
+        telemetry_values[i].type=query.value(2).toString();
+        telemetry_values[i].name=query.value(3).toString();
+        telemetry_values[i].unit=query.value(4).toString();
         telemetry_values[i].enable=false;
         i+=1;
     }
