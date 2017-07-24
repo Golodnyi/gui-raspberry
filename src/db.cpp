@@ -1,9 +1,6 @@
 #include <iostream>
-#include <QtSql>
+#include <QtSql/QtSql>
 #include <QtGui>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
 
 using namespace std;
 
