@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <zconf.h>
+#include <QtGui>
 
 using namespace std;
 
@@ -15,13 +16,13 @@ extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *update(void *arg);
 
 struct dataStruct {
-    string alias; // англ название (numPage)
-    short int byte; // кол-во байт
-    string type; // тип предоставления данных
-    string name; // название датчика на русском (температура блока цилиндров)
-    string unit; // мера измерения (км в час, цельясия...)
+    QString alias; // англ название (numPage)
+    int byte; // кол-во байт
+    QString type; // тип предоставления данных
+    QString name; // название датчика на русском (температура блока цилиндров)
+    QString unit; // мера измерения (км в час, цельясия...)
     bool enable; // значение из сокета
-    string value; // значение из сокета
+    QString value; // значение из сокета
 
 };
 int client_socket;
@@ -164,7 +165,7 @@ void *flex(void *arg) {
         }
         cout << endl;
 
-        // побитно сдвигаем, выводим каждый элемент 2 cсообщения
+        // побитно сдвигаем, выводим каждый элемент 2 cообщения
         uint32_t IDr_2 = ((uint8_t) head_2[7] << 24) + ((uint8_t) head_2[6] << 16) + ((uint8_t) head_2[5] << 8) +
                          (uint8_t) head_2[4];    // идентификатор получателя 2 (не изменен)
         cout << IDr_2 << endl;
@@ -303,51 +304,58 @@ void *flex(void *arg) {
                     if (telemetry_values[i].type == "I32") {
                         int32_t a = ((int8_t) buff_3_2[3] << 24) + ((int8_t) buff_3_2[2] << 16) +
                                     ((int8_t) buff_3_2[1] << 8) + (int8_t) buff_3_2[0];
-                        telemetry_values[i].value = to_string(a);
-                        cout << telemetry_values[i].alias << " = " << a << " I32";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string a1 = to_string(a);
+                        telemetry_values[i].value = QString::fromStdString(a1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << a << " I32";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "U32") {
                         uint32_t b = ((uint8_t) buff_3_2[3] << 24) + ((uint8_t) buff_3_2[2] << 16) +
                                      ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
-                        telemetry_values[i].value = to_string(b);
-                        cout << telemetry_values[i].alias << " = " << b << " U32";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string b1 = to_string(b);
+                        telemetry_values[i].value = QString::fromStdString(b1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << b << " U32";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "Float") {
                         for (int j = 0; j < 4; j++) {
                             speed.speedData[j] = buff_3_2[j];
                         }
                         float c = speed.speed;
-                        telemetry_values[i].value = to_string(c);
-                        cout << telemetry_values[i].alias << " = " << c << " Float";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string c1 = to_string(c);
+                        telemetry_values[i].value = QString::fromStdString(c1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << c << " Float";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else {
                         cout << "mistake, 4 bytes" << endl;
                     }
                 } else if (telemetry_values[i].byte == 2) {
                     if (telemetry_values[i].type == "I16") {
                         int16_t d = ((int8_t) buff_3_2[1] << 8) + (int8_t) buff_3_2[0];
-                        telemetry_values[i].value = to_string(d);
-                        cout << telemetry_values[i].alias << " = " << d << " I16";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string d1 = to_string(d);
+                        telemetry_values[i].value = QString::fromStdString(d1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << d << " I16";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "U16") {
                         uint16_t e = ((uint8_t) buff_3_2[1] << 8) + (uint8_t) buff_3_2[0];
-                        telemetry_values[i].value = to_string(e);
-                        cout << telemetry_values[i].alias << " = " << e << " U16";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string e1 = to_string(e);
+                        telemetry_values[i].value = QString::fromStdString(e1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << e << " U16";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else {
                         cout << "mistake, 2 bytes" << endl;
                     }
                 } else if (telemetry_values[i].byte == 1) {
                     if (telemetry_values[i].type == "I8") {
                         int8_t f = (int8_t) buff_3_2[0];
-                        telemetry_values[i].value = to_string(f);
-                        cout << telemetry_values[i].alias << " = " << f << " I8";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string f1 = to_string(f);
+                        telemetry_values[i].value = QString::fromStdString(f1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << f << " I8";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else if (telemetry_values[i].type == "U8") {
                         uint8_t j = (uint8_t) buff_3_2[0];
-                        telemetry_values[i].value = to_string(j);
-                        cout << telemetry_values[i].alias << " = " << g << " U8";
-                        cout << " = " << telemetry_values[i].value << " значение с сокета" << endl;
+                        string j1 = to_string(j);
+                        telemetry_values[i].value = QString::fromStdString(j1);
+                        cout << telemetry_values[i].alias.toStdString() << " = " << g << " U8";
+                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
                     } else {
                         cout << "mistake, 1 bytes" << endl;
                     }

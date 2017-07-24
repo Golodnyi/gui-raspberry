@@ -2,7 +2,6 @@
 #include <QApplication>
 #include <QtGui>
 #include <QListWidget>
-#include <QComboBox>
 #include <QGridLayout>
 
 using namespace std;
@@ -10,18 +9,22 @@ using namespace std;
 QListWidget *listWidget;
 QListWidget *listWidget1;
 struct dataStruct {
-    string alias; // англ название (numPage)
-    short int byte;
-    string type;
-    string name; // название датчика на русском (температура блока цилиндров)
-    string unit; // мера измерения (км в час, цельясия...)
+    QString alias; // англ название (numPage)
+    int byte;
+    QString type;
+    QString name; // название датчика на русском (температура блока цилиндров)
+    QString unit; // мера измерения (км в час, цельясия...)
     bool enable; // значение из сокета
-    string value; // значение из сокета
+    QString value; // значение из сокета
 
 };
 
 extern void * flex(void *arg);
 extern void close_socket();
+extern void connect();
+extern dataStruct getTelemetry(dataStruct *telemetry_values);
+
+
 void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
@@ -35,9 +38,9 @@ void * update(void *arg) {
             y=listWidget1->count();
             if(x>y){
                 QListWidgetItem *Item1 = new QListWidgetItem;
-                Item1->setText(QString::fromStdString(telemetry_values[i].name)
-                                  + ": " + QString::fromStdString(telemetry_values[i].value)
-                                  + " " + QString::fromStdString(telemetry_values[i].unit));
+                Item1->setText(QString(telemetry_values[i].name)
+                                  + ": " + QString(telemetry_values[i].value)
+                                  + " " + QString(telemetry_values[i].unit));
 
                 listWidget1->insertItem(i, Item1);
                 if (i == 2) {
@@ -48,9 +51,9 @@ void * update(void *arg) {
             }
             else {
                 QListWidgetItem *Item = new QListWidgetItem;
-                Item->setText(QString::fromStdString(telemetry_values[i].name)
-                              + ": " + QString::fromStdString(telemetry_values[i].value)
-                              + " " + QString::fromStdString(telemetry_values[i].unit));
+                Item->setText(QString(telemetry_values[i].name)
+                              + ": " + QString(telemetry_values[i].value)
+                              + " " + QString(telemetry_values[i].unit));
 
                 listWidget->insertItem(i, Item);
                 if (i == 2) {
@@ -59,7 +62,7 @@ void * update(void *arg) {
                     Item->setBackground(Qt::green);
                 }
             }
-            cout << telemetry_values[i].value << endl;
+            cout << telemetry_values[i].value.toStdString() << endl;
 
         }
     }
@@ -67,8 +70,8 @@ void * update(void *arg) {
 }
 int gui_init(int argc, char *argv[]) {
     QApplication app(argc, argv); //(постоянная) приложение
-    QWidget *window = new QWidget;
 
+    QWidget *window = new QWidget;
     listWidget = new QListWidget;
     listWidget->setFont(QFont("Times", 16, QFont::Normal));
     QListWidgetItem *Item = new QListWidgetItem;
@@ -91,6 +94,11 @@ int gui_init(int argc, char *argv[]) {
     window->showFullScreen();
 
     dataStruct telemetry_values[85];
+
+    connect();
+    getTelemetry((dataStruct*) telemetry_values);
+
+   /** dataStruct telemetry_values[85];
     telemetry_values[0] = {"numPage", 4, "U32", "Номер", "", false}; // 1 id записи в черном ящике
     telemetry_values[1] = {"Code", 2, "U16", "Код события", "", false}; // 2 код события
     telemetry_values[2] = {"Time", 4, "U32", "Время", " сек.", false}; // 3 время события
@@ -175,7 +183,7 @@ int gui_init(int argc, char *argv[]) {
     telemetry_values[81] = {"ATemp1", 2, "U16", "название", "км/ч", false};
     telemetry_values[82] = {"ATemp1", 2, "U16", "название", "км/ч", false};
     telemetry_values[83] = {"ATemp1", 2, "U16", "название", "км/ч", false};
-    telemetry_values[84] = {"ATemp1", 2, "U16", "название", "км/ч", false};
+    telemetry_values[84] = {"ATemp1", 2, "U16", "название", "км/ч", false};**/
 
 
     pthread_t thread;
