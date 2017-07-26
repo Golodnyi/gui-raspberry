@@ -9,22 +9,23 @@
 
 using namespace std;
 
-extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
-
-extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
-
-extern void *update(void *arg);
-
 struct dataStruct {
     QString alias; // англ название (numPage)
     int byte; // кол-во байт
     QString type; // тип предоставления данных
     QString name; // название датчика на русском (температура блока цилиндров)
     QString unit; // мера измерения (км в час, цельясия...)
+    QString filter; // перевод значений
     bool enable; // значение из сокета
-    QString value; // значение из сокета
+    QString value; // значение датчика
 
 };
+
+extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
+extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
+extern void *TelemetryConvert(dataStruct *telemetry_values);
+
+
 int client_socket;
 void close_socket() {
     close(client_socket);
@@ -216,7 +217,7 @@ void *flex(void *arg) {
         uint8_t bitfield_size = data_size / 8 + 1;
         cout << "Bitfield size " << bitfield_size << " bytes" << endl;
 
-        bitset<69> bitfield;
+        bitset<85> bitfield;
         int g = 0;
         for (int i = 0; i < bitfield_size; i++) {
             for (int j = 7; j >= 0; j--) {
@@ -225,7 +226,7 @@ void *flex(void *arg) {
                 bitfield[g] = state;
                 telemetry_values[g].enable = state;
                 cout << bitfield[g];
-                if (g >= 68) {
+                if (g >= 84) {
                     break;
                 }
                 g++;
@@ -271,7 +272,7 @@ void *flex(void *arg) {
         cout << "Send " << bytes_2 << " bytes" << endl;
 
         int x = 0;
-        for (int i = 0; i < 69; i++) {
+        for (int i = 0; i < 85; i++) {
             if ((bool) bitfield[i] == 1) {
                 x += telemetry_values[i].byte;
             }
@@ -378,13 +379,11 @@ void *flex(void *arg) {
         char answer_3[3];
         copy(buff_3_1, buff_3_1 + 2, answer_3);
         answer_3[2] = crc8_calc((unsigned char *) answer_3, 2);
-        //copy(buff_3_3, buff_3_3, answer_3 + 3);
 
         int bytes_3 = send(client_socket, answer_3, 3, 0);
         cout << "Send " << bytes_3 << " bytes" << endl;
 
-        update(telemetry_values);
-
+        TelemetryConvert(telemetry_values);
     }
     close_socket();
     exit(0);

@@ -14,8 +14,9 @@ struct dataStruct {
     QString type;
     QString name; // название датчика на русском (температура блока цилиндров)
     QString unit; // мера измерения (км в час, цельясия...)
+    QString filter; // перевод значений
     bool enable; // значение из сокета
-    QString value; // значение из сокета
+    QString value; // значение датчика
 
 };
 
@@ -24,7 +25,6 @@ extern void close_socket();
 extern void connect();
 extern dataStruct getTelemetry(dataStruct *telemetry_values);
 
-
 void * update(void *arg) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
@@ -32,7 +32,7 @@ void * update(void *arg) {
     short int y=0;
     listWidget->clear();
     listWidget1->clear();
-    for (int i = 0; i < 43; i++) {
+    for (int i = 0; i < 85; i++) {
         if (telemetry_values[i].enable) {
             x=listWidget->count();
             y=listWidget1->count();
@@ -94,7 +94,7 @@ int gui_init(int argc, char *argv[]) {
     MainLayout->addWidget(listWidget1, 0, 1);
 
     window->setLayout(MainLayout);
-    window->showFullScreen();
+   window->showFullScreen();
 
     pthread_t thread;
     int result = pthread_create(&thread, NULL, flex, &telemetry_values);
