@@ -17,6 +17,7 @@ struct dataStruct {
     QString filter; // перевод значений
     bool enable; // значение из сокета
     QString value; // значение датчика
+    QString color;
 
 };
 
@@ -41,29 +42,38 @@ void * update(void *arg) {
                 Item1->setText((telemetry_values[i].name)
                                   + ": " + (telemetry_values[i].value)
                                   + " " + (telemetry_values[i].unit));
-
                 listWidget1->insertItem(i, Item1);
-                if (i == 2) {
+
+                if (telemetry_values[i].color == "red") {
                     Item1->setBackground(Qt::red);
-                } else {
+                }
+                else if (telemetry_values[i].color == "yellow"){
+                    Item1->setBackground(Qt::yellow);
+                }
+                else{
                     Item1->setBackground(Qt::green);
                 }
+
+
             }
             else {
                 QListWidgetItem *Item = new QListWidgetItem;
                 Item->setText((telemetry_values[i].name)
                               + ": " + (telemetry_values[i].value)
                               + " " + (telemetry_values[i].unit));
-
                 listWidget->insertItem(i, Item);
-                if (i == 2) {
+
+                if (telemetry_values[i].color == "red") {
                     Item->setBackground(Qt::red);
-                } else {
+                }
+                else if (telemetry_values[i].color == "yellow"){
+                    Item->setBackground(Qt::yellow);
+                }
+                else{
                     Item->setBackground(Qt::green);
                 }
             }
             cout << telemetry_values[i].value.toStdString() << endl;
-
         }
     }
     cout << "end update" << endl;

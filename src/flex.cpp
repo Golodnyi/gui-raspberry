@@ -18,6 +18,7 @@ struct dataStruct {
     QString filter; // перевод значений
     bool enable; // значение из сокета
     QString value; // значение датчика
+    QString color;
 
 };
 

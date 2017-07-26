@@ -13,6 +13,7 @@ struct dataStruct {
     QString filter; // перевод значений
     bool enable; // значение из сокета
     QString value; // значение датчика
+    QString color;
 };
 
 extern void *update(void *arg);
@@ -57,39 +58,43 @@ void * TelemetryConvert(dataStruct *telemetry_values) {
     for (int i = 0; i < 85; i++) {
         if (telemetry_values[i].enable) {
             if (telemetry_values[i].filter == "air_pressure") {
-                if (!query.exec(("SELECT val FROM air_pressure WHERE " + telemetry_values[i].value +
+                if (!query.exec(("SELECT val, color FROM air_pressure WHERE " + telemetry_values[i].value +
                                  " BETWEEN min AND max;"))) {
                     cout << "SQL Query filed 2 : " << query.lastError().text().toStdString() << endl;
                 }
                 while (query.next()) {
                     telemetry_values[i].value = query.value(0).toString();
+                    telemetry_values[i].color = query.value(1).toString();
                 }
             }
             else if (telemetry_values[i].filter.toStdString() == "oil_pressure_k19") {
-                if (!query.exec(("SELECT val FROM oil_pressure_k19 WHERE " + telemetry_values[i].value +
+                if (!query.exec(("SELECT val,color FROM oil_pressure_k19 WHERE " + telemetry_values[i].value +
                                  " BETWEEN min AND max;"))) {
                     cout << "SQL Query filed 2 : " << query.lastError().text().toStdString() << endl;
                 }
                 while (query.next()) {
                     telemetry_values[i].value = query.value(0).toString();
+                    telemetry_values[i].color = query.value(1).toString();
                 }
             }
             else if (telemetry_values[i].filter.toStdString() == "oil_pressure_k50") {
-                if (!query.exec(("SELECT val FROM oil_pressure_k50 WHERE " + telemetry_values[i].value +
+                if (!query.exec(("SELECT val,color FROM oil_pressure_k50 WHERE " + telemetry_values[i].value +
                                  " BETWEEN min AND max;"))) {
                     cout << "SQL Query filed 2 : " << query.lastError().text().toStdString() << endl;
                 }
                 while (query.next()) {
                     telemetry_values[i].value = query.value(0).toString();
+                    telemetry_values[i].color = query.value(1).toString();
                 }
             }
             else if (telemetry_values[i].filter.toStdString() == "vacuum_k19") {
-                if (!query.exec(("SELECT val FROM vacuum_k19 WHERE " + telemetry_values[i].value +
+                if (!query.exec(("SELECT val,color FROM vacuum_k19 WHERE " + telemetry_values[i].value +
                                  " BETWEEN min AND max;"))) {
                     cout << "SQL Query filed 2 : " << query.lastError().text().toStdString() << endl;
                 }
                 while (query.next()) {
                     telemetry_values[i].value = query.value(0).toString();
+                    telemetry_values[i].color = query.value(1).toString();
                 }
             }
         }
