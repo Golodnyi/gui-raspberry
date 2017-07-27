@@ -3,9 +3,9 @@
 
 using namespace std;
 
-uint recv_head(int client_socket) {
-    char head[16];
-    recv(client_socket, head, 16, 0);        //связали сокет с head
+extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
+
+uint recv_head(char head[16]) {
 
     char preamble[4];
     copy(head, head + 4, preamble);            // перенесли первые 4 байта в преамбулу
@@ -28,5 +28,5 @@ uint recv_head(int client_socket) {
     uint8_t CSp = (uint8_t) head[15];        // контрольная сумма заголовка
     cout << CSp << endl;
 
-    return (IDr, IDs, size, CSd, CSp);
+    return (preamble, IDr, IDs, size, CSd, CSp);
 }

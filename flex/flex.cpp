@@ -21,7 +21,7 @@ struct dataStruct {
     QString color;
 
 };
-//extern uint recv_head(int client_socket);
+extern uint recv_head(char head[16]);
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
@@ -63,10 +63,10 @@ void *flex(void *arg) {
         cout << "connect" << endl;
         temp_vector.clear();
 
-        //uint recv_head(client_socket);
-        char head[16];
 
-        result = recv(client_socket, head, 16, 0);        //связали сокет с head
+        char head[16];
+        result = recv(client_socket, head, 16, 0);
+        //recv_head(head);
 
         char preamble[4];
         copy(head, head + 4, preamble);            // перенесли первые 4 байта в преамбулу
