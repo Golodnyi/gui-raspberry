@@ -1,6 +1,7 @@
 #include <iostream>
 #include <QtSql/QtSql>
 #include <QtGui>
+#include <bitset>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ struct dataStruct {
 };
 
 extern QString derive(QString tab, dataStruct *telemetry_values, int i);
-extern void *update(void *arg);
+extern void *update(void *arg, bitset<85> bitfield);
 
 QSqlDatabase sdb;
 
@@ -46,14 +47,14 @@ dataStruct getTelemetry(dataStruct *telemetry_values) {
         telemetry_values[i].name=query.value(3).toString();
         telemetry_values[i].unit=query.value(4).toString();
         telemetry_values[i].filter=query.value(5).toString();
-        telemetry_values[i].enable=false;
+        telemetry_values[i].enable=query.value(6).toBool();;
         i+=1;
     }
     cout << "End get" << endl;
     return(*telemetry_values);
 }
 
-void * TelemetryConvert(dataStruct *telemetry_values) {
+void * TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield) {
     cout << "Start telemetry convert" << endl;
     QSqlQuery query;
     QString tab1= "air_pressure";
@@ -61,7 +62,7 @@ void * TelemetryConvert(dataStruct *telemetry_values) {
     QString tab3="oil_pressure_k50";
     QString tab4="vacuum_k19";
     for (int i = 0; i < 85; i++) {
-        if (telemetry_values[i].enable) {
+        if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
             if (telemetry_values[i].filter == tab1) {
                 derive(tab1, telemetry_values , i );
             }
@@ -77,7 +78,7 @@ void * TelemetryConvert(dataStruct *telemetry_values) {
         }
     }
     cout << "End telemetry convert" << endl;
-    update(telemetry_values);
+    update(telemetry_values, bitfield);
 }
 
 

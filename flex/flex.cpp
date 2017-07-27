@@ -24,7 +24,7 @@ struct dataStruct {
 //extern uint recv_head(int client_socket);
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
-extern void *TelemetryConvert(dataStruct *telemetry_values);
+extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
 
 
 int client_socket;
@@ -227,7 +227,6 @@ void *flex(void *arg) {
                 uint8_t tbyte = buff_2[i + 10];
                 bool state = (bool) (tbyte & (1 << j));
                 bitfield[g] = state;
-                telemetry_values[g].enable = state;
                 cout << bitfield[g];
                 if (g >= 84) {
                     break;
@@ -386,7 +385,7 @@ void *flex(void *arg) {
         int bytes_3 = send(client_socket, answer_3, 3, 0);
         cout << "Send " << bytes_3 << " bytes" << endl;
 
-        TelemetryConvert(telemetry_values);
+        TelemetryConvert(telemetry_values, bitfield);
     }
     close_socket();
     exit(0);

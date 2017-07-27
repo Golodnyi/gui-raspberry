@@ -3,6 +3,7 @@
 #include <QtGui>
 #include <QListWidget>
 #include <QGridLayout>
+#include <bitset>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ extern void close_socket();
 extern void connect();
 extern dataStruct getTelemetry(dataStruct *telemetry_values);
 
-void * update(void *arg) {
+void * update(void *arg, bitset<85> bitfield) {
     dataStruct* telemetry_values = (dataStruct *)arg;
     cout << "update" << endl;
     short int x=0;
@@ -34,7 +35,7 @@ void * update(void *arg) {
     listWidget->clear();
     listWidget1->clear();
     for (int i = 0; i < 85; i++) {
-        if (telemetry_values[i].enable) {
+        if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
             x=listWidget->count();
             y=listWidget1->count();
             if(x>y){
