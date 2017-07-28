@@ -31,7 +31,7 @@ struct TResult{
     char buff[19];     //массив для пакета данных
 };
 extern TResult recv_head(const char *head,int client_socket);
-extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
+extern char answer_send(TResult returnValue, char *answer, char *answer_body, int body_size);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
 
@@ -96,31 +96,8 @@ void *flex(void *arg) {
         char answer[19];                // массив ответа
         char answer_body[3] = {'*', '<', 'S'};
         uint16_t body_size = 3;
-
-        copy(returnValue.preamble, returnValue.preamble + 4, answer);    // записываем преамбулу в ответ
-        short int k = 0;
-        for (int i = 4; i < 8; i++) {            // записываем IDs ответ
-            answer[i] = (returnValue.IDs >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 8; i < 12; i++) {            // записываем IDr в ответ
-            answer[i] = (returnValue.IDr >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 12; i < 14; i++) {                // записываем размер в ответ
-            answer[i] = (body_size << k) & 0xFF;
-            k += 8;
-        }
-        unsigned char body_sign = xor_sum((unsigned char *) answer_body, 3);
-        answer[14] = body_sign;
-
-        unsigned char head_sign = xor_sum((unsigned char *) answer, 15);
-        answer[15] = head_sign;
-
+        answer_send(returnValue, (char*) answer, (char*) answer_body, body_size);
         copy(answer_body, answer_body + 3, answer + 16);
-
         int bytes = send(client_socket, answer, 19, 0);
         cout << "Send " << bytes << " bytes" << endl;        // выводим количество отправленных байт
 
@@ -171,44 +148,14 @@ void *flex(void *arg) {
         answer_body_2[7] = protocol_version;
         answer_body_2[8] = struct_version;
         uint16_t body_size_2 = 9;
-
-        copy(returnValue.preamble, returnValue.preamble + 4, answer_2);        // записываем преамбулу во 2 ответ
-        k = 0;
-        for (int i = 4; i < 8; i++) {            // записываем IDs_2 во 2 ответ
-            answer_2[i] = (returnValue.IDs >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 8; i < 12; i++) {            // записываем IDr_2 во 2 ответ
-            answer_2[i] = (returnValue.IDr >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 12; i < 14; i++) {                // записываем размер во 2 ответ
-            answer_2[i] = (body_size_2 << k) & 0xFF;
-            k += 8;
-        }
-        unsigned char body_sign_2 = xor_sum((unsigned char *) answer_body_2, body_size_2);
-        answer_2[14] = body_sign_2;
-
-        unsigned char head_sign_2 = xor_sum((unsigned char *) answer_2, 15);
-        answer_2[15] = head_sign_2;
-
+        answer_send(returnValue, (char*) answer_2, (char*) answer_body_2, body_size_2);
         copy(answer_body_2, answer_body_2 + 9, answer_2 + 16);
 
         int bytes_2 = send(client_socket, answer_2, 25, 0);
         cout << "Send " << bytes_2 << " bytes" << endl;
 
-        int x = 0;
-        for (int i = 0; i < 85; i++) {
-            if ((bool) bitfield[i] == 1) {
-                x += telemetry_values[i].byte;
-            }
-        }
-        cout << "x:= " << x << " bytes" << endl;
-
         char buff_3_1[2];                                    // 3 пакет с текущим состоянием
-        result = recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
+        recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
         char index[2];
         copy(buff_3_1, buff_3_1 + 2, index);            // перенесли первые 2 байта из сообщения
         temp_vector.resize(2);

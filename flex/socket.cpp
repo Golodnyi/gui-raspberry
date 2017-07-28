@@ -62,7 +62,7 @@ TResult recv_head(const char *head,int client_socket) {
     return (returnValue);
 }
 
-char answer_send(TResult returnValue, char* answer, char *answer_body, int *body_size) {
+char answer_send(TResult returnValue, char *answer, char *answer_body, int body_size) {
     copy(returnValue.preamble, returnValue.preamble + 4, answer);    // записываем преамбулу в ответ
     short int k = 0;
     for (int i = 4; i < 8; i++) {            // записываем IDs ответ
@@ -76,15 +76,13 @@ char answer_send(TResult returnValue, char* answer, char *answer_body, int *body
     }
     k = 0;
     for (int i = 12; i < 14; i++) {                // записываем размер в ответ
-        answer[i] = (*body_size << k) & 0xFF;
+        answer[i] = (body_size << k) & 0xFF;
         k += 8;
     }
-
     unsigned char body_sign = xor_sum((unsigned char *) answer_body, 3);
     answer[14] = body_sign;
 
     unsigned char head_sign = xor_sum((unsigned char *) answer, 15);
     answer[15] = head_sign;
-
     return (*answer);
 }
