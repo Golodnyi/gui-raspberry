@@ -51,6 +51,10 @@ void * update(void *arg, bitset<85> bitfield) {
                 else if (telemetry_values[i].color == "yellow"){
                     Item1->setBackground(Qt::yellow);
                 }
+                else if (telemetry_values[i].color == "lightGray"){
+                    Item1->setBackground(Qt::lightGray);
+                    Item1->setText(((telemetry_values[i].name)+" не переведено в " + (telemetry_values[i].unit)));
+                }
                 else{
                     Item1->setBackground(Qt::green);
                 }
@@ -69,6 +73,10 @@ void * update(void *arg, bitset<85> bitfield) {
                 }
                 else if (telemetry_values[i].color == "yellow"){
                     Item->setBackground(Qt::yellow);
+                }
+                else if (telemetry_values[i].color == "lightGray"){
+                    Item->setBackground(Qt::lightGray);
+                    Item->setText(((telemetry_values[i].name)+" не переведено в " + (telemetry_values[i].unit)));
                 }
                 else{
                     Item->setBackground(Qt::green);

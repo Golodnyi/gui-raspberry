@@ -17,19 +17,20 @@ struct dataStruct {
 };
 
 QString derive(QString tab, dataStruct *telemetry_values, int i){
-    cout << "Start derive " << endl;
     QSqlQuery query;
     if (!query.exec(("SELECT val, color FROM " + tab + " WHERE " + telemetry_values[i].value +
                      " BETWEEN min AND max;"))) {
         cout << "SQL Query filed 2 : " << query.lastError().text().toStdString() << endl;
     }
-    while (query.next()) {
+    if (query.next()) {
+        cout << "Start derive telemetry_values[" << i << "]." << telemetry_values[i].name.toStdString() << endl;
         telemetry_values[i].value = query.value(0).toString();
         telemetry_values[i].color = query.value(1).toString();
     }
-    cout << "color= " << telemetry_values[i].color.toStdString() << endl;
-    cout << "value= " << telemetry_values[i].value.toStdString() << endl;
-
-    return(telemetry_values[i].color);
+    else{
+        cout << "telemetry_values[" << i << "]." << telemetry_values[i].name.toStdString() << " not included in the range" << endl;
+        telemetry_values[i].color = "lightGray";
+    }
+    return(telemetry_values[i].value,telemetry_values[i].color);
 }
 
