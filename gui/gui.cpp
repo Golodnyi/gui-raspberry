@@ -1,14 +1,15 @@
 #include <iostream>
 #include <QApplication>
 #include <QtGui>
-#include <QListWidget>
 #include <QGridLayout>
+#include <QListWidget>
 #include <bitset>
-
-using namespace std;
 
 QListWidget *listWidget;
 QListWidget *listWidget1;
+
+using namespace std;
+
 struct dataStruct {
     QString alias; // англ название (numPage)
     int byte;
@@ -21,7 +22,7 @@ struct dataStruct {
     QString color;
 
 };
-
+extern void color(dataStruct *telemetry_values, int i, QListWidgetItem *Item);
 extern void * flex(void *arg);
 extern void close_socket();
 extern void connect();
@@ -34,32 +35,20 @@ void * update(void *arg, bitset<85> bitfield) {
     short int y=0;
     listWidget->clear();
     listWidget1->clear();
+    cout << "update1" << endl;
     for (int i = 0; i < 85; i++) {
         if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
+            cout << "update1" << endl;
             x=listWidget->count();
             y=listWidget1->count();
+            cout << "update2" << endl;
             if(x>y){
                 QListWidgetItem *Item1 = new QListWidgetItem;
                 Item1->setText((telemetry_values[i].name)
                                   + ": " + (telemetry_values[i].value)
                                   + " " + (telemetry_values[i].unit));
                 listWidget1->insertItem(i, Item1);
-
-                if (telemetry_values[i].color == "red") {
-                    Item1->setBackground(Qt::red);
-                }
-                else if (telemetry_values[i].color == "yellow"){
-                    Item1->setBackground(Qt::yellow);
-                }
-                else if (telemetry_values[i].color == "lightGray"){
-                    Item1->setBackground(Qt::lightGray);
-                    Item1->setText(((telemetry_values[i].name)+" не переведено в " + (telemetry_values[i].unit)));
-                }
-                else{
-                    Item1->setBackground(Qt::green);
-                }
-
-
+                color(telemetry_values, i, Item1);
             }
             else {
                 QListWidgetItem *Item = new QListWidgetItem;
@@ -67,20 +56,7 @@ void * update(void *arg, bitset<85> bitfield) {
                               + ": " + (telemetry_values[i].value)
                               + " " + (telemetry_values[i].unit));
                 listWidget->insertItem(i, Item);
-
-                if (telemetry_values[i].color == "red") {
-                    Item->setBackground(Qt::red);
-                }
-                else if (telemetry_values[i].color == "yellow"){
-                    Item->setBackground(Qt::yellow);
-                }
-                else if (telemetry_values[i].color == "lightGray"){
-                    Item->setBackground(Qt::lightGray);
-                    Item->setText(((telemetry_values[i].name)+" не переведено в " + (telemetry_values[i].unit)));
-                }
-                else{
-                    Item->setBackground(Qt::green);
-                }
+                color(telemetry_values, i, Item);
             }
             cout << telemetry_values[i].value.toStdString() << endl;
         }
@@ -96,24 +72,26 @@ int gui_init(int argc, char *argv[]) {
     getTelemetry((dataStruct*) telemetry_values);
 
     QWidget *window = new QWidget;
-    listWidget = new QListWidget;
+    QListWidget *listWidget = new QListWidget;
     listWidget->setFont(QFont("Times", 16, QFont::Normal));
     QListWidgetItem *Item = new QListWidgetItem;
     Item->setText(QString::fromStdString("Ожидание данных"));
     listWidget->insertItem(0, Item);
+    *listWidget;
 
-    listWidget1 = new QListWidget;
+    QListWidget *listWidget1 = new QListWidget;
     listWidget1->setFont(QFont("Times", 16, QFont::Normal));
     QListWidgetItem *Item1 = new QListWidgetItem;
     Item1->setText(QString::fromStdString("Ожидание данных"));
     listWidget1->insertItem(0, Item1);
+    *listWidget1;
 
     QGridLayout *MainLayout = new QGridLayout();
     MainLayout->addWidget(listWidget, 0, 0);
     MainLayout->addWidget(listWidget1, 0, 1);
 
     window->setLayout(MainLayout);
-   window->showFullScreen();
+    window->showFullScreen();
 
     pthread_t thread;
     int result = pthread_create(&thread, NULL, flex, &telemetry_values);
@@ -131,3 +109,4 @@ int gui_init(int argc, char *argv[]) {
     close_socket();
     return code;
 }
+

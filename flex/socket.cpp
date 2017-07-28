@@ -15,7 +15,9 @@ struct TResult{
 
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 
-TResult recv_head(const char *head,int client_socket) {
+TResult recv_head(int client_socket) {
+    char head[16];
+    recv(client_socket, head, 16, 0);
 
     TResult returnValue;
 

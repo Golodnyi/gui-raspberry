@@ -18,7 +18,7 @@ struct dataStruct {
 };
 
 extern QString derive(QString tab, dataStruct *telemetry_values, int i);
-extern void *update(void *arg, bitset<85> bitfield);
+extern void* update(void *arg, bitset<85> bitfield);
 
 QSqlDatabase sdb;
 

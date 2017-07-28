@@ -30,7 +30,7 @@ struct TResult{
     uint8_t CSp;
     char buff[19];     //массив для пакета данных
 };
-extern TResult recv_head(const char *head,int client_socket);
+extern TResult recv_head(int client_socket);
 extern char answer_send(TResult returnValue, char *answer, char *answer_body, int body_size);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
@@ -72,9 +72,7 @@ void *flex(void *arg) {
         cout << "connect" << endl;
         temp_vector.clear();
 
-        char head_1[16];
-        recv(client_socket, head_1, 16, 0);
-        TResult returnValue = recv_head((const char*) head_1, client_socket);
+        TResult returnValue = recv_head(client_socket);
 
         char s[3];
         copy(returnValue.buff, returnValue.buff + 3, s);
@@ -101,9 +99,7 @@ void *flex(void *arg) {
         int bytes = send(client_socket, answer, 19, 0);
         cout << "Send " << bytes << " bytes" << endl;        // выводим количество отправленных байт
 
-        char head_2[16];                               // 2 сообщение с протоколами
-        recv(client_socket, head_2, 16, 0);        //связали сокет с head2
-        returnValue = recv_head((const char*) head_2, client_socket);
+        returnValue = recv_head(client_socket);
 
         char FLEX[6];
         copy(returnValue.buff, returnValue.buff + 6, FLEX);
