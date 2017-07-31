@@ -9,22 +9,33 @@
 
 using namespace std;
 
-extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
-
-extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
-
-extern void *update(void *arg);
-
 struct dataStruct {
     QString alias; // англ название (numPage)
     int byte; // кол-во байт
     QString type; // тип предоставления данных
     QString name; // название датчика на русском (температура блока цилиндров)
     QString unit; // мера измерения (км в час, цельясия...)
+    QString filter; // перевод значений
     bool enable; // значение из сокета
-    QString value; // значение из сокета
+    QString value; // значение датчика
+    QString color;
 
 };
+struct TResult{
+    char preamble[4];
+    uint32_t IDr;
+    uint32_t IDs;
+    uint16_t size;
+    uint8_t CSd;
+    uint8_t CSp;
+    char buff[19];     //массив для пакета данных
+};
+extern TResult recv_head(int client_socket);
+extern char answer_send(TResult returnValue, char *answer, char *answer_body, int body_size);
+extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
+extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
+
+
 int client_socket;
 void close_socket() {
     close(client_socket);
@@ -53,71 +64,27 @@ void *flex(void *arg) {
 
     int listen_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);    // принимающий сокет
     cout << "socket start: " << result << endl;
-    result = bind(listen_socket, addr->ai_addr,
+    bind(listen_socket, addr->ai_addr,
                   (int) addr->ai_addrlen); // привязываем сокет на IP-адресс из getaddrinfo
     listen(listen_socket, SOMAXCONN);    // ожидание соединения
 
     while (client_socket = accept(listen_socket, NULL, NULL)) {
         cout << "connect" << endl;
         temp_vector.clear();
-        char head[16];
 
-        result = recv(client_socket, head, 16, 0);        //связали сокет с head
-
-        char preamble[4];
-        copy(head, head + 4, preamble);            // перенесли первые 4 байта в преамбулу
-        for (int i = 0; i <= 3; i++) {
-            cout << preamble[i];
-        }
-        cout << endl;
-
-        // побитно сдвигаем, выводим каждый элемент
-        uint32_t IDr = ((uint8_t) head[7] << 24) + ((uint8_t) head[6] << 16) + ((uint8_t) head[5] << 8) +
-                       (uint8_t) head[4];    // идентификатор получателя
-        cout << IDr << endl;
-        uint32_t IDs = ((uint8_t) head[11] << 24) + ((uint8_t) head[10] << 16) + ((uint8_t) head[9] << 8) +
-                       (uint8_t) head[8]; //идентификатор отправителя
-        cout << IDs << endl;
-        uint16_t size = ((uint8_t) head[13] << 8) + (uint8_t) head[12];        //размер
-        cout << size << endl;
-        uint8_t CSd = (uint8_t) head[14];        // контрольная сумма документов
-        cout << CSd << endl;
-        uint8_t CSp = (uint8_t) head[15];        // контрольная сумма заголовка
-        cout << CSp << endl;
-
-        char buff[19];                                        // массив для пакета1
-        result = recv(client_socket, buff, size, 0);        // создаем массив, для хранения пакета и связываем с сокетом
-
-        unsigned char buff_val = xor_sum((unsigned char *) buff, 19);
-        if (buff_val == CSd) {
-            cout << "CSd success" << endl;
-        } else {
-            cout << "CSd fail"
-                 << endl;            // проверяем сумму документов (CSd-контр.сумма документов, buff-общая сумма входящего пакета)
-            continue;
-        }
-
-        unsigned char CSp_val = xor_sum((unsigned char *) head, 15);
-
-        if (CSp_val == CSp) {
-            cout << "CSp success" << endl;
-        } else {
-            cout << "CSp fail"
-                 << endl;        // проверяем заголовок (CSp-контр.сумма заголовка, head-16 байтовый заголовок пакета)
-            continue;
-        }
+        TResult returnValue = recv_head(client_socket);
 
         char s[3];
-        copy(buff, buff + 3, s);
+        copy(returnValue.buff, returnValue.buff + 3, s);
         for (int i = 0; i <= 2; i++) {
             cout << s[i];                    // первые 3 байта-идентификатор объекта
         }
 
-        char znak = buff[3];
+        char znak = returnValue.buff[3];
         cout << znak;                        // разделительный знак :
 
         char IMEI[15];                        // идентификатор устройства GSM модема
-        copy(buff + 4, buff + 19, IMEI);
+        copy(returnValue.buff + 4, returnValue.buff + 19, IMEI);
         for (int i = 0; i <= 14; i++) {
             cout << IMEI[i];
         }
@@ -127,105 +94,40 @@ void *flex(void *arg) {
         char answer[19];                // массив ответа
         char answer_body[3] = {'*', '<', 'S'};
         uint16_t body_size = 3;
-
-        copy(preamble, preamble + 4, answer);    // записываем преамбулу в ответ
-        short int k = 0;
-        for (int i = 4; i < 8; i++) {            // записываем IDs ответ
-            answer[i] = (IDs >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 8; i < 12; i++) {            // записываем IDr в ответ
-            answer[i] = (IDr >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 12; i < 14; i++) {                // записываем размер в ответ
-            answer[i] = (body_size << k) & 0xFF;
-            k += 8;
-        }
-        unsigned char body_sign = xor_sum((unsigned char *) answer_body, 3);
-        answer[14] = body_sign;
-
-        unsigned char head_sign = xor_sum((unsigned char *) answer, 15);
-        answer[15] = head_sign;
-
+        answer_send(returnValue, (char*) answer, (char*) answer_body, body_size);
         copy(answer_body, answer_body + 3, answer + 16);
-
         int bytes = send(client_socket, answer, 19, 0);
         cout << "Send " << bytes << " bytes" << endl;        // выводим количество отправленных байт
 
-        char head_2[16];                                    // 2 сообщение с протоколами
-        result = recv(client_socket, head_2, 16, 0);        //связали сокет с head2
+        returnValue = recv_head(client_socket);
 
-        char preamble_2[4];
-        copy(head_2, head_2 + 4, preamble_2);            // перенесли первые 4 байта в преамбулу
-        for (int i = 0; i <= 3; i++) {
-            cout << preamble_2[i];
-        }
-        cout << endl;
-
-        // побитно сдвигаем, выводим каждый элемент 2 cообщения
-        uint32_t IDr_2 = ((uint8_t) head_2[7] << 24) + ((uint8_t) head_2[6] << 16) + ((uint8_t) head_2[5] << 8) +
-                         (uint8_t) head_2[4];    // идентификатор получателя 2 (не изменен)
-        cout << IDr_2 << endl;
-        uint32_t IDs_2 = ((uint8_t) head_2[11] << 24) + ((uint8_t) head_2[10] << 16) + ((uint8_t) head_2[9] << 8) +
-                         (uint8_t) head_2[8]; //идентификатор отправителя 2 (не изменен)
-        cout << IDs_2 << endl;
-        uint16_t size_2 = ((uint8_t) head_2[13] << 8) + (uint8_t) head_2[12];        //размер 2 сообщения
-        cout << size_2 << endl;
-        uint8_t CSd_2 = (uint8_t) head_2[14];        // контрольная сумма документов 2
-        cout << CSd_2 << endl;
-        uint8_t CSp_2 = (uint8_t) head_2[15];        // контрольная сумма заголовка 2
-        cout << CSp_2 << endl;
-
-        char buff_2[19];                                        // массив для 2 сообщения
-        result = recv(client_socket, buff_2, size_2, 0);        // связываем с сокетом
-
-        unsigned char buff_val_2 = xor_sum((unsigned char *) buff_2, 19);
-        if (buff_val_2 == CSd_2) {
-            cout << "CSd 2 success" << endl;
-        } else {
-            cout << "CSd 2 fail" << endl;
-            continue;
-        }
-
-        unsigned char CSp_val_2 = xor_sum((unsigned char *) head_2, 15);
-
-        if (CSp_val_2 == CSp_2) {
-            cout << "CSp 2 success" << endl;
-        } else {
-            cout << "CSp 2 fail" << endl;
-            continue;
-        }
         char FLEX[6];
-        copy(buff_2, buff_2 + 6, FLEX);
+        copy(returnValue.buff, returnValue.buff + 6, FLEX);
         for (int i = 0; i <= 5; i++) {
             cout << FLEX[i];
         }
         cout << endl;
 
-        uint8_t protocol = (uint8_t) buff_2[6];            // Условное обозначение протокола, в котором собирается работать устройство
+        uint8_t protocol = (uint8_t) returnValue.buff[6];            // Условное обозначение протокола, в котором собирается работать устройство
         cout << protocol << endl;
-        uint8_t protocol_version = (uint8_t) buff_2[7];    // Версия протокола
+        uint8_t protocol_version = (uint8_t) returnValue.buff[7];    // Версия протокола
         cout << protocol_version << endl;
-        uint8_t struct_version = (uint8_t) buff_2[8];    // Версия структуры данных
+        uint8_t struct_version = (uint8_t) returnValue.buff[8];    // Версия структуры данных
         cout << struct_version << endl;
-        uint8_t data_size = (uint8_t) buff_2[9];        // Размер последующего конфигурационного поля
+        uint8_t data_size = (uint8_t) returnValue.buff[9];        // Размер последующего конфигурационного поля
         cout << data_size << endl;
         uint8_t bitfield_size = data_size / 8 + 1;
         cout << "Bitfield size " << bitfield_size << " bytes" << endl;
 
-        bitset<69> bitfield;
+        bitset<85> bitfield;
         int g = 0;
         for (int i = 0; i < bitfield_size; i++) {
             for (int j = 7; j >= 0; j--) {
-                uint8_t tbyte = buff_2[i + 10];
+                uint8_t tbyte = returnValue.buff[i + 10];
                 bool state = (bool) (tbyte & (1 << j));
                 bitfield[g] = state;
-                telemetry_values[g].enable = state;
                 cout << bitfield[g];
-                if (g >= 68) {
+                if (g >= 84) {
                     break;
                 }
                 g++;
@@ -242,44 +144,14 @@ void *flex(void *arg) {
         answer_body_2[7] = protocol_version;
         answer_body_2[8] = struct_version;
         uint16_t body_size_2 = 9;
-
-        copy(preamble_2, preamble_2 + 4, answer_2);        // записываем преамбулу во 2 ответ
-        k = 0;
-        for (int i = 4; i < 8; i++) {            // записываем IDs_2 во 2 ответ
-            answer_2[i] = (IDs_2 >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 8; i < 12; i++) {            // записываем IDr_2 во 2 ответ
-            answer_2[i] = (IDr_2 >> k) & 0xFF;
-            k += 8;
-        }
-        k = 0;
-        for (int i = 12; i < 14; i++) {                // записываем размер во 2 ответ
-            answer_2[i] = (body_size_2 << k) & 0xFF;
-            k += 8;
-        }
-        unsigned char body_sign_2 = xor_sum((unsigned char *) answer_body_2, body_size_2);
-        answer_2[14] = body_sign_2;
-
-        unsigned char head_sign_2 = xor_sum((unsigned char *) answer_2, 15);
-        answer_2[15] = head_sign_2;
-
+        answer_send(returnValue, (char*) answer_2, (char*) answer_body_2, body_size_2);
         copy(answer_body_2, answer_body_2 + 9, answer_2 + 16);
 
         int bytes_2 = send(client_socket, answer_2, 25, 0);
         cout << "Send " << bytes_2 << " bytes" << endl;
 
-        int x = 0;
-        for (int i = 0; i < 69; i++) {
-            if ((bool) bitfield[i] == 1) {
-                x += telemetry_values[i].byte;
-            }
-        }
-        cout << "x:= " << x << " bytes" << endl;
-
         char buff_3_1[2];                                    // 3 пакет с текущим состоянием
-        result = recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
+        recv(client_socket, buff_3_1, 2, 0);        //связали сокет с буфером 3
         char index[2];
         copy(buff_3_1, buff_3_1 + 2, index);            // перенесли первые 2 байта из сообщения
         temp_vector.resize(2);
@@ -361,7 +233,7 @@ void *flex(void *arg) {
         }
 
         char buff_3_3[1];
-        result = recv(client_socket, buff_3_3, 1, 0);
+        recv(client_socket, buff_3_3, 1, 0);
         uint8_t crc8 = (uint8_t) buff_3_3[0];
         cout << crc8 << endl;
 
@@ -378,13 +250,11 @@ void *flex(void *arg) {
         char answer_3[3];
         copy(buff_3_1, buff_3_1 + 2, answer_3);
         answer_3[2] = crc8_calc((unsigned char *) answer_3, 2);
-        //copy(buff_3_3, buff_3_3, answer_3 + 3);
 
         int bytes_3 = send(client_socket, answer_3, 3, 0);
         cout << "Send " << bytes_3 << " bytes" << endl;
 
-        update(telemetry_values);
-
+        TelemetryConvert(telemetry_values, bitfield);
     }
     close_socket();
     exit(0);
