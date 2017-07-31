@@ -1,8 +1,3 @@
-
-#include <stdio.h>   /* Стандартные объявления ввода/вывода */
-#include <string.h>  /* Объявления строковых функций */
-#include <unistd.h>  /* Объявления стандартных функций UNIX */
-#include <errno.h>   /* Объявления кодов ошибок */
 #include <iostream>
 
 using namespace std;
@@ -16,16 +11,13 @@ struct TResult{
     char buff[19];     //массив для пакета данных
 };
 
+extern int my_in(int fd, char* buff,int size, int client_socket);
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 
-TResult read_head(int fd) {
+TResult read_head(int fd, int client_socket) {
     char head[16];
-    int result=read(fd, head, 16);
-    if(result == -1)
-    {
-        char *errmsg = strerror(errno);
-        printf("%s\n",errmsg);
-    }
+    my_in(fd,(char*)head, 16, client_socket);
+
     TResult returnValue;
 
     copy(head, head + 4, returnValue.preamble);            // перенесли первые 4 байта в преамбулу
@@ -48,7 +40,8 @@ TResult read_head(int fd) {
         returnValue.CSp = (uint8_t) head[15];        // контрольная сумма заголовка
         cout << returnValue.CSp << endl;
 
-    read(fd, returnValue.buff, returnValue.size);        // создаем массив, для хранения пакета и связываем с сокетом
+    my_in(fd, returnValue.buff, returnValue.size, client_socket);
+    // создаем массив, для хранения пакета и связываем с сокетом
 
     unsigned char buff_val = xor_sum((unsigned char *) returnValue.buff, 19);
     if (buff_val == returnValue.CSd) {
