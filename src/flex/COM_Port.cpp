@@ -1,5 +1,9 @@
+
+#include <stdio.h>   /* Стандартные объявления ввода/вывода */
+#include <string.h>  /* Объявления строковых функций */
+#include <unistd.h>  /* Объявления стандартных функций UNIX */
+#include <errno.h>   /* Объявления кодов ошибок */
 #include <iostream>
-#include <sys/socket.h>
 
 using namespace std;
 struct TResult{
@@ -12,37 +16,39 @@ struct TResult{
     char buff[19];     //массив для пакета данных
 };
 
-
 extern unsigned char xor_sum(unsigned char *buffer, unsigned int length);
 
-TResult recv_head(int client_socket) {
+TResult read_head(int fd) {
     char head[16];
-    recv(client_socket, head, 16, 0);
-
+    int result=read(fd, head, 16);
+    if(result == -1)
+    {
+        char *errmsg = strerror(errno);
+        printf("%s\n",errmsg);
+    }
     TResult returnValue;
 
     copy(head, head + 4, returnValue.preamble);            // перенесли первые 4 байта в преамбулу
     for (int i = 0; i <= 3; i++) {
         cout << returnValue.preamble[i];
-    }
-    cout << endl;
+        }
+        cout << endl;
 
-// побитно сдвигаем, выводим каждый элемент
-    returnValue.IDr = ((uint8_t) head[7] << 24) + ((uint8_t) head[6] << 16) + ((uint8_t) head[5] << 8) +
-                   (uint8_t) head[4];    // идентификатор получателя
-    cout << returnValue.IDr << endl;
-    returnValue.IDs = ((uint8_t) head[11] << 24) + ((uint8_t) head[10] << 16) + ((uint8_t) head[9] << 8) +
-                   (uint8_t) head[8]; //идентификатор отправителя
-    cout << returnValue.IDs << endl;
-    returnValue.size = ((uint8_t) head[13] << 8) + (uint8_t) head[12];        //размер
-    cout << returnValue.size << endl;
-    returnValue.CSd = (uint8_t) head[14];        // контрольная сумма документов
-    cout << returnValue.CSd << endl;
-    returnValue.CSp = (uint8_t) head[15];        // контрольная сумма заголовка
-    cout << returnValue.CSp << endl;
+        // побитно сдвигаем, выводим каждый элемент
+        returnValue.IDr = ((uint8_t) head[7] << 24) + ((uint8_t) head[6] << 16) + ((uint8_t) head[5] << 8) +
+                          (uint8_t) head[4];    // идентификатор получателя
+        cout << returnValue.IDr << endl;
+        returnValue.IDs = ((uint8_t) head[11] << 24) + ((uint8_t) head[10] << 16) + ((uint8_t) head[9] << 8) +
+                          (uint8_t) head[8]; //идентификатор отправителя
+        cout << returnValue.IDs << endl;
+        returnValue.size = ((uint8_t) head[13] << 8) + (uint8_t) head[12];        //размер
+        cout << returnValue.size << endl;
+        returnValue.CSd = (uint8_t) head[14];        // контрольная сумма документов
+        cout << returnValue.CSd << endl;
+        returnValue.CSp = (uint8_t) head[15];        // контрольная сумма заголовка
+        cout << returnValue.CSp << endl;
 
-
-    recv(client_socket, returnValue.buff, returnValue.size, 0);        // создаем массив, для хранения пакета и связываем с сокетом
+    read(fd, returnValue.buff, returnValue.size);        // создаем массив, для хранения пакета и связываем с сокетом
 
     unsigned char buff_val = xor_sum((unsigned char *) returnValue.buff, 19);
     if (buff_val == returnValue.CSd) {
@@ -60,7 +66,6 @@ TResult recv_head(int client_socket) {
         cout << "CSp fail"
              << endl;        // проверяем заголовок (CSp-контр.сумма заголовка, head-16 байтовый заголовок пакета)
     }
-
     return (returnValue);
 }
 

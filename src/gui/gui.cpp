@@ -24,7 +24,7 @@ struct dataStruct {
 };
 extern void color(dataStruct *telemetry_values, int i, QListWidgetItem *Item);
 extern void * flex(void *arg);
-extern void close_socket();
+extern void close_fd();
 extern void connect();
 extern dataStruct getTelemetry(dataStruct *telemetry_values);
 
@@ -106,7 +106,7 @@ int gui_init(int argc, char *argv[]) {
     qRegisterMetaType<QVector<int> >("QVector<int>");
 
     int code = app.exec();
-    close_socket();
+    close_fd();
     return code;
 }
 

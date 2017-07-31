@@ -12,6 +12,6 @@ ConsoleApplication3/Debug
 ConsoleApplication3/Release
 guiraspberry_automoc.cpp
 cmake-build-debug/
-db/gr.db
-!/db/gr.db
+src/db/gr.db
+!/src/db/gr.db
 /guiraspberry_autogen/
