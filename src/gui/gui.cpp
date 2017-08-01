@@ -4,29 +4,17 @@
 #include <QGridLayout>
 #include <QListWidget>
 #include <bitset>
+#include <src/struct.h>
 
 using namespace std;
 
 QListWidget *listWidget;
 QListWidget *listWidget1;
-struct dataStruct {
-    QString alias; // англ название (numPage)
-    int byte;
-    QString type;
-    QString name; // название датчика на русском (температура блока цилиндров)
-    QString unit; // мера измерения (км в час, цельясия...)
-    QString filter; // перевод значений
-    bool enable; // значение из сокета
-    QString value; // значение датчика
-    QString color;
-
-};
 
 extern void * flex(void *arg);
 extern void connect();
 extern dataStruct getTelemetry(dataStruct *telemetry_values);
-extern void color(dataStruct *telemetry_values, int i, QListWidgetItem *Item);
-extern void close_fd();
+extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item);
 
 void * update(void *arg, bitset<85> bitfield) {
     dataStruct* telemetry_values = (dataStruct *)arg;
@@ -103,6 +91,5 @@ int gui_init(int argc, char *argv[]) {
     qRegisterMetaType<QVector<int> >("QVector<int>");
 
     int code = app.exec();
-    close_fd();
     return code;
 }

@@ -3,9 +3,6 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <fcntl.h>   /* Объявления управления файлами */
-#include <bitset>
-#include <QtGui>
-#include <QString>
 
 using namespace std;
 
@@ -43,5 +40,11 @@ int open_socket(int listen_socket){
     bind(listen_socket, addr->ai_addr,
          (int) addr->ai_addrlen); // привязываем сокет на IP-адресс из getaddrinfo
     listen(listen_socket, SOMAXCONN);    // ожидание соединения**/
+
     return listen_socket;
+}
+
+void close(int *a) {
+    close(a);
+    cout << "Close " << a << endl;
 }

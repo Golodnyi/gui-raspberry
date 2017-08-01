@@ -7,7 +7,7 @@
 
 using namespace std;
 int result;
-int my_in(int fd, char* buff,int size, int client_socket){
+int my_in(int fd, char* buff,int size, int client_socket){      //считывание данных
     if(fd != -1){
         result=read(fd, buff, size);
          if(result == -1)
@@ -28,7 +28,7 @@ int my_in(int fd, char* buff,int size, int client_socket){
     }
 }
 
-int my_out(int fd, char* buff,int size, int client_socket){
+int my_out(int fd, char* buff,int size, int client_socket){      //отправка данных
     if(fd != -1) {
         result = read(fd, buff, size);
         return result;

@@ -8,32 +8,12 @@
 #include <sys/socket.h>
 #include <QtGui>
 #include <QString>
+#include <src/struct.h>
 
 
 using namespace std;
 
-struct dataStruct {
-    QString alias; // англ название (numPage)
-    int byte; // кол-во байт
-    QString type; // тип предоставления данных
-    QString name; // название датчика на русском (температура блока цилиндров)
-    QString unit; // мера измерения (км в час, цельясия...)
-    QString filter; // перевод значений
-    bool enable; // значение из сокета
-    QString value; // значение датчика
-    QString color;
-};
-
-struct TResult{
-    char preamble[4];
-    uint32_t IDr;
-    uint32_t IDs;
-    uint16_t size;
-    uint8_t CSd;
-    uint8_t CSp;
-    char buff[19];     //массив для пакета данных
-};
-
+int a;
 int fd;
 int listen_socket;
 int client_socket;
@@ -46,30 +26,23 @@ extern char answer_send(TResult returnValue, char *answer, char *answer_body, in
 extern int my_out(int fd, char* buff,int size, int client_socket);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
-
-void close_fd() {
-    close(fd);
-    cout << "Close fd" << endl;
-}
-
-void close_socket() {
-    close(client_socket);
-    cout << "Close fd" << endl;
-}
+extern void close(int *a);
 
 void *flex(void *arg) {
     dataStruct *telemetry_values = (dataStruct *) arg;
     vector<char> temp_vector;
 
-    listen_socket = open_socket(listen_socket);
-
     fd = open_port(fd);
+
+    listen_socket = open_socket(listen_socket);
 
     while (fd != -1|(client_socket = accept(listen_socket, NULL, NULL))) {
         if(fd != -1){
-        cout << "Start COM port " << endl;
+            a= fd;
+            cout << "Start COM port " << endl;
         }
         else {
+            a = client_socket;
             cout << "Start socket "  << endl;
         }
 
@@ -273,8 +246,8 @@ void *flex(void *arg) {
 
         TelemetryConvert(telemetry_values, bitfield);
     }
-    close_fd();
-    close_socket();
+
+    close(a);
     exit(0);
 }
 
