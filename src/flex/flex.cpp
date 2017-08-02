@@ -35,7 +35,7 @@ void *flex(void *arg) {
     fd = open_port(fd);
 
     // client_socket = open_socket(listen_socket);
-
+    char c[4];
     while (fd != -1|(client_socket = accept(listen_socket, NULL, NULL))) {
         if(fd != -1){
             a= fd;
@@ -47,6 +47,10 @@ void *flex(void *arg) {
         }
 
         TResult returnValue = read_head(fd, client_socket);
+
+        if (returnValue.preamble != "@NTC") {
+            continue;
+        }
 
         char s[3];
         copy(returnValue.buff, returnValue.buff + 3, s);
