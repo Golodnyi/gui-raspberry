@@ -21,4 +21,3 @@ QString derive(QString tab, dataStruct *telemetry_values, int i){
     }
     return(telemetry_values[i].value,telemetry_values[i].color);
 }
-

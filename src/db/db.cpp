@@ -2,21 +2,10 @@
 #include <QtSql/QtSql>
 #include <QtGui>
 #include <bitset>
+#include <src/struct.h>
 #include <cmath>
 
 using namespace std;
-
-struct dataStruct {
-    QString alias; // англ название (numPage)
-    int byte; // кол-во байт
-    QString type; // тип предоставления данных
-    QString name; // название датчика на русском (температура блока цилиндров)
-    QString unit; // мера измерения (км в час, цельясия...)
-    QString filter; // перевод значений
-    bool enable; // значение из сокета
-    QString value; // значение датчика
-    QString color;
-};
 
 extern QString derive(QString tab, dataStruct *telemetry_values, int i);
 extern void* update(void *arg, bitset<85> bitfield);
