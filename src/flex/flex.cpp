@@ -46,6 +46,10 @@ void *flex(void *arg) {
             cout << "Start socket "  << endl;
         }
 
+        char c;
+        my_in(fd,(char*) c, 1, client_socket);
+        cout << c << endl;
+        continue;
         TResult returnValue = read_head(fd, client_socket);
 
         char s[3];
