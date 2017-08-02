@@ -11,7 +11,7 @@ int open_port(int fd){
     if (fd == -1)
     {
         //порт не открывается
-        perror("open_port: Unable to open /dev/ttyS0 - ");
+        perror("open_port: Unable to open /dev/ttyACM0 - ");
     }
     else
         fcntl(fd, F_SETFL, 0);
