@@ -63,16 +63,27 @@ unsigned char crc8_calc
 }
 
 TResult read_head(int fd, int client_socket) {
-    char head[16];
-    my_in(fd,(char*)head, 16, client_socket);
+    char preamble[4] = "@NTC";
+    char c;
+    int i = 0;
+    while(true) {
+        c = '';
+        my_in(fd,(char*)c, 1, client_socket);
+        if (preamble[i] != c) {
+            i = 0;
+        }
+
+        if (i == 3) {
+            break;
+        }
+
+        i++;
+    }
+
+    char head[12];
+    my_in(fd,(char*)head, 12, client_socket);
 
     TResult returnValue;
-
-    copy(head, head + 4, returnValue.preamble);            // перенесли первые 4 байта в преамбулу
-    for (int i = 0; i <= 3; i++) {
-        cout << returnValue.preamble[i];
-    }
-    cout << endl;
 
     // побитно сдвигаем, выводим каждый элемент
     returnValue.IDr = ((uint8_t) head[7] << 24) + ((uint8_t) head[6] << 16) + ((uint8_t) head[5] << 8) +
