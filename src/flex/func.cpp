@@ -104,7 +104,7 @@ TResult read_head(int fd, int client_socket) {
     if (CSp_val == returnValue.CSp) {
         cout << "CSp success" << endl;
     } else {
-        cout << "CSp fail"
+        cout << "CSp fail, my:" << CSp_val << " input: " << returnValue.CSp
              << endl;        // проверяем заголовок (CSp-контр.сумма заголовка, head-16 байтовый заголовок пакета)
     }
     return (returnValue);
