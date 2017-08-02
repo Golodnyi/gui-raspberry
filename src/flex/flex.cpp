@@ -39,11 +39,11 @@ void *flex(void *arg) {
     while (fd != -1|(client_socket = accept(listen_socket, NULL, NULL))) {
         if(fd != -1){
             a= fd;
-            cout << "Start COM port " << endl;
+    //        cout << "Start COM port " << endl;
         }
         else {
             a = client_socket;
-            cout << "Start socket "  << endl;
+      //      cout << "Start socket "  << endl;
         }
 
         char c;
