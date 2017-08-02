@@ -35,7 +35,7 @@ void *flex(void *arg) {
     fd = open_port(fd);
 
     // client_socket = open_socket(listen_socket);
-    char c[1];
+    char c[4];
     while (fd != -1|(client_socket = accept(listen_socket, NULL, NULL))) {
         if(fd != -1){
             a= fd;
@@ -46,7 +46,7 @@ void *flex(void *arg) {
       //      cout << "Start socket "  << endl;
         }
 
-        my_in(fd,(char*) c, 1, client_socket);
+        my_in(fd,(char*) c, 4, client_socket);
         cout << c << endl;
         continue;
         TResult returnValue = read_head(fd, client_socket);
