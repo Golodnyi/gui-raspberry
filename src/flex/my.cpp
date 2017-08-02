@@ -7,33 +7,30 @@
 
 using namespace std;
 int result;
-int my_in(int fd, char* buff,int size, int client_socket){      //считывание данных
-    if(fd != -1){
-        result=read(fd, buff, size);
-         if(result == -1)
-        {
+
+int my_in(int fd, char *buff, int size, int client_socket) {      //считывание данных
+    if (fd != -1) {
+        result = read(fd, buff, size);
+        if (result == -1) {
             char *errmsg = strerror(errno);
-            printf("%s\n",errmsg);
-         }
-       return result;
-}
-    else{
-        result=recv(client_socket, buff, size, 0);
-        if(result == -1)
-        {
+            printf("error: %s\n", errmsg);
+        }
+        return result;
+    } else {
+        result = recv(client_socket, buff, size, 0);
+        if (result == -1) {
             char *errmsg = strerror(errno);
-            printf("%s\n",errmsg);
+            printf("%s\n", errmsg);
         }
         return result;
     }
 }
 
-int my_out(int fd, char* buff,int size, int client_socket){      //отправка данных
-    if(fd != -1) {
+int my_out(int fd, char *buff, int size, int client_socket) {      //отправка данных
+    if (fd != -1) {
         result = read(fd, buff, size);
         return result;
-    }
-    else{
+    } else {
         result = send(client_socket, buff, size, 0);
         return result;
     }
