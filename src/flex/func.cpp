@@ -68,7 +68,7 @@ TResult read_head(int fd, int client_socket) {
     int i = 0;
     while(true) {
         c[0] = 0;
-        my_in(fd,(char*)c, 1, client_socket);
+        my_in(fd,(char*)c[0], 1, client_socket);
         if (preamble[i] != c[0]) {
             i = 0;
         }
