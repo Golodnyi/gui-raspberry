@@ -48,7 +48,7 @@ set_interface_attribs (int fd, int speed, int parity)
 }
 
 int open_port(int fd){
-    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY |O_NONBLOCK);
+    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
     if (fd == -1)
     {
         //порт не открывается
