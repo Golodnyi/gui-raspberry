@@ -64,12 +64,11 @@ unsigned char crc8_calc
 
 TResult read_head(int fd, int client_socket) {
     char preamble[4] = {'@','N','T','C'};
-    char c = 0;
+    char c[1];
     int i = 0;
     while(true) {
-        c = 0;
         my_in(fd,(char*)c, 1, client_socket);
-        if (preamble[i] != c) {
+        if (preamble[i] != c[0]) {
             i = 0;
         }
 
