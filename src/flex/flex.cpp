@@ -34,7 +34,9 @@ void *flex(void *arg) {
 
     fd = open_port(fd);
 
-    // client_socket = open_socket(listen_socket);
+    if (fd == -1) {
+        client_socket = open_socket(listen_socket);
+    }
     while (fd != -1|(client_socket = accept(listen_socket, NULL, NULL))) {
         if(fd != -1){
             a= fd;
