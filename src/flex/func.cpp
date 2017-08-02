@@ -63,39 +63,32 @@ unsigned char crc8_calc
 }
 
 TResult read_head(int fd, int client_socket) {
-    char preamble[4] = {'@','N','T','C'};
-    char c[1];
-    int i = 0;
-    while(true) {
-        my_in(fd,(char*)c, 1, client_socket);
-        if (preamble[i] != c[0]) {
-            i = 0;
-        }
 
-        if (i == 3) {
-            break;
-        }
+    TResult returnValue;
 
-        i++;
+    my_in(fd,(char*)returnValue.preamble, 4, client_socket);
+    if (returnValue.preamble != "@NTC"){
+        cout << "preamble mistake"<<endl;
+    }
+    else{
+        cout<< "preamble success" << endl;
     }
 
     char head[12];
     my_in(fd,(char*)head, 12, client_socket);
 
-    TResult returnValue;
-
     // побитно сдвигаем, выводим каждый элемент
-    returnValue.IDr = ((uint8_t) head[7] << 24) + ((uint8_t) head[6] << 16) + ((uint8_t) head[5] << 8) +
-                      (uint8_t) head[4];    // идентификатор получателя
+    returnValue.IDr = ((uint8_t) head[3] << 24) + ((uint8_t) head[2] << 16) + ((uint8_t) head[1] << 8) +
+                      (uint8_t) head[0];    // идентификатор получателя
     cout << returnValue.IDr << endl;
-    returnValue.IDs = ((uint8_t) head[11] << 24) + ((uint8_t) head[10] << 16) + ((uint8_t) head[9] << 8) +
-                      (uint8_t) head[8]; //идентификатор отправителя
+    returnValue.IDs = ((uint8_t) head[7] << 24) + ((uint8_t) head[6] << 16) + ((uint8_t) head[5] << 8) +
+                      (uint8_t) head[4]; //идентификатор отправителя
     cout << returnValue.IDs << endl;
-    returnValue.size = ((uint8_t) head[13] << 8) + (uint8_t) head[12];        //размер
+    returnValue.size = ((uint8_t) head[9] << 8) + (uint8_t) head[8];        //размер
     cout << returnValue.size << endl;
-    returnValue.CSd = (uint8_t) head[14];        // контрольная сумма документов
+    returnValue.CSd = (uint8_t) head[10];        // контрольная сумма документов
     cout << returnValue.CSd << endl;
-    returnValue.CSp = (uint8_t) head[15];        // контрольная сумма заголовка
+    returnValue.CSp = (uint8_t) head[11];        // контрольная сумма заголовка
     cout << returnValue.CSp << endl;
 
     my_in(fd, returnValue.buff, returnValue.size, client_socket);
