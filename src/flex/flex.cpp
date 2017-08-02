@@ -35,7 +35,7 @@ void *flex(void *arg) {
     fd = open_port(fd);
 
     // client_socket = open_socket(listen_socket);
-
+    char c[1];
     while (fd != -1|(client_socket = accept(listen_socket, NULL, NULL))) {
         if(fd != -1){
             a= fd;
@@ -46,7 +46,6 @@ void *flex(void *arg) {
       //      cout << "Start socket "  << endl;
         }
 
-        char c;
         my_in(fd,(char*) c, 1, client_socket);
         cout << c << endl;
         continue;
