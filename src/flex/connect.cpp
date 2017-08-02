@@ -7,7 +7,7 @@
 using namespace std;
 
 int open_port(int fd){
-    fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY |O_NONBLOCK);
+    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY |O_NONBLOCK);
     if (fd == -1)
     {
         //порт не открывается

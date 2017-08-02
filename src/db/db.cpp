@@ -2,6 +2,7 @@
 #include <QtSql/QtSql>
 #include <QtGui>
 #include <bitset>
+#include <cmath>
 
 using namespace std;
 
@@ -75,6 +76,12 @@ void * TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield) {
             else if (telemetry_values[i].filter == tab4) {
                 derive(tab4, telemetry_values , i );
             }
+        }
+        if( telemetry_values[i].type == "Float"){
+            //telemetry_values[i].value = "%.2f", telemetry_values[i].value.toFloat();
+            //telemetry_values[i].value = QString::fromStdString(to_string(floor(telemetry_values[i].value.toFloat()*100)/100));
+            telemetry_values[i].value=QString::fromStdString(to_string(round(telemetry_values[i].value.toFloat()*100)/100));
+            cout <<"тип флоат "<< telemetry_values[i].value.toStdString() << endl;
         }
     }
     cout << "End telemetry convert" << endl;
