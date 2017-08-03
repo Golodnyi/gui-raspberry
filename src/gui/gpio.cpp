@@ -1,7 +1,7 @@
 #include <iostream>
 #include <bcm2835.h>
 
-#define PIN RPI_BPLUS_GPIO_J8_36
+#define PIN  RPI_V2_GPIO_P1_36
 
 
 using namespace std;
