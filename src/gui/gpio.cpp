@@ -1,6 +1,6 @@
 #include <bcm2835.h>
 
-#define PIN RPI_GPIO_P1_16
+#define PIN RPI_GPIO_P1_03
 
 
 
