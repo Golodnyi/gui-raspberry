@@ -175,10 +175,10 @@ void *flex(void *arg) {
                         for (int j = 0; j < 4; j++) {
                             speed.speedData[j] = buff_3_2[j];
                         }
-                        float c = speed.speed;
+                        float c = round(speed.speed*100)/100.0;
                         telemetry_values[i].value = QString::fromStdString(to_string(c));
                         cout << telemetry_values[i].alias.toStdString() << " = " << c << " Float";
-                        cout << " = " << telemetry_values[i].value.toStdString() << " значение с сокета" << endl;
+                        cout << " = " << telemetry_values[i].value.toStdString() << "округленное значение с сокета" << endl;
                     } else {
                         cout << "mistake, 4 bytes" << endl;
                     }

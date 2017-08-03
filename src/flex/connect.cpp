@@ -55,7 +55,7 @@ int open_port(int fd){
         perror("open_port: Unable to open /dev/ttyACM0 - ");
     }
     else {
-        cout << 'com port open' << endl;
+        cout << "com port open" << endl;
         int r = set_interface_attribs(fd, B9600, 0);
         cout << "set speed: " << r << endl;
         // fcntl(fd, F_SETFL, 0);
