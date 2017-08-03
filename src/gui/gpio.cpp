@@ -1,14 +1,16 @@
+#include <iostream>
 #include <bcm2835.h>
 
 #define PIN RPI_GPIO_P1_03
 
 
+using namespace std;
 
 int gpio(void){
     unsigned int tone[8] = {956, 851, 758, 716, 638, 568, 506, 478}; // Создаём массив с рассчитанными периодами для каждой ноты
 
     if (!bcm2835_init()) {    // Инициализация GPIO
-        std::cout << "bcm2835 no found" << endl;
+        cout << "bcm2835 no found" << endl;
         return 1;
     }           //Завершение программы, если инициализация не удалась
 
