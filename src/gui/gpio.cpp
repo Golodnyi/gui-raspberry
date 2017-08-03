@@ -1,12 +1,12 @@
 #include <iostream>
 #include <bcm2835.h>
 
-#define PIN  RPI_V2_GPIO_P1_36
-
+#define PIN  RPI_V2_GPIO_P1_16
 
 using namespace std;
 
 int gpio(void){
+    cout << "gpio start"<< endl;
     unsigned int tone[8] = {956, 851, 758, 716, 638, 568, 506, 478}; // Создаём массив с рассчитанными периодами для каждой ноты
 
     if (!bcm2835_init()) {    // Инициализация GPIO
