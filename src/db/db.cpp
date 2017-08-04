@@ -3,7 +3,6 @@
 #include <QtGui>
 #include <bitset>
 #include <src/struct.h>
-#include <cmath>
 
 using namespace std;
 
