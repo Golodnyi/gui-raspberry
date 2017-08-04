@@ -20,6 +20,6 @@ add_executable(guiraspberry ${SOURCE_FILES})
 target_link_libraries(guiraspberry Qt5::Widgets)
 target_link_libraries(guiraspberry Qt5::Sql)
 target_link_libraries(guiraspberry pthread)
-target_link_libraries(guiraspberry bcm2835)
+target_link_libraries(guiraspberry pigpio)
 
 
