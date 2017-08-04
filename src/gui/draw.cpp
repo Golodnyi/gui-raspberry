@@ -6,7 +6,7 @@
 
 using namespace std;
 
-extern int gpio(void);
+extern int gpio();
 
 int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item) {
     QTime time;
@@ -14,7 +14,7 @@ int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item) {
     time.start();
     if (telemetry_values[i].color == "red") {
         Item->setBackground(Qt::red);
-        gpio;
+        gpio();
         cout<< "звук" << endl;
     }
     else if (telemetry_values[i].color == "yellow") {
