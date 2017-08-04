@@ -9,7 +9,7 @@ int gpio(){
     cout << "gpio start"<< endl;
     unsigned int tone[8] = {956, 851, 758, 716, 638, 568, 506, 478}; // Создаём массив с рассчитанными периодами для каждой ноты
 
-    if (!wiringPiSetup ()) {    // Инициализация GPIO
+    if (wiringPiSetup() == -1) {    // Инициализация GPIO
         cout << "not found" << endl;
         return 1;
     }           //Завершение программы, если инициализация не удалась
