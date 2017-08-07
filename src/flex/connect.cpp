@@ -9,8 +9,9 @@
 
 using namespace std;
 
-int
-set_interface_attribs (int fd, int speed, int parity)
+char * port;
+
+int set_interface_attribs (int fd, int speed, int parity)
 {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
@@ -49,19 +50,20 @@ set_interface_attribs (int fd, int speed, int parity)
 }
 
 int open_port(int fd){
+
     QSqlQuery query;
-    char port[14];
     if (!query.exec(("SELECT port FROM raspberry WHERE funk='com_port'"))) {
         cout << "SQL Query filed: " <<  query.lastError().text().toStdString() << endl;
     }
     while (query.next()) {
-        strcpy(port, query.value(0).toString().toStdString().c_str());
+        port=&query.value(0).toString().toStdString()[0];
     }
+    cout<< "port " << port << endl;
     fd = open(port, O_RDWR | O_NOCTTY);
     if (fd == -1)
     {
         //порт не открывается
-        perror("open_port: Unable to open");
+        perror("open_port: Unable to open ");
     }
     else {
         cout << "com port open" << endl;
