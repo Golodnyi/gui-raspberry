@@ -5,6 +5,7 @@
 #include <fcntl.h>   /* Объявления управления файлами */
 #include <cstring>
 #include <termio.h>
+#include <QtSql/QtSql>
 
 using namespace std;
 
@@ -48,11 +49,19 @@ set_interface_attribs (int fd, int speed, int parity)
 }
 
 int open_port(int fd){
-    fd = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+    QSqlQuery query;
+    char port[14];
+    if (!query.exec(("SELECT port FROM raspberry WHERE funk='com_port'"))) {
+        cout << "SQL Query filed: " <<  query.lastError().text().toStdString() << endl;
+    }
+    while (query.next()) {
+        strcpy(port, query.value(0).toString().toStdString().c_str());
+    }
+    fd = open(port, O_RDWR | O_NOCTTY);
     if (fd == -1)
     {
         //порт не открывается
-        perror("open_port: Unable to open /dev/ttyACM0 - ");
+        perror("open_port: Unable to open");
     }
     else {
         cout << "com port open" << endl;
