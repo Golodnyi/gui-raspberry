@@ -16,7 +16,7 @@ int gpio(){
         PIN=query.value(0).toInt();
     }
 
-    /**unsigned int tone = 638; // частота ноты
+    unsigned int tone = 638; // частота ноты
 
     if (wiringPiSetup() == -1) {    // Инициализация GPIO
         cout << "not found " << endl;
@@ -33,7 +33,7 @@ int gpio(){
             delay(tone);
         }
 
-    return (0); // Выход из программы**/
+    return (0); // Выход из программы
 }
 
 
