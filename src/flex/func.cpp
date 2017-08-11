@@ -153,7 +153,7 @@ char answer_send(TResult returnValue, char *answer, char *answer_body, int body_
         answer[i] = (body_size << k) & 0xFF;
         k += 8;
     }
-    unsigned char body_sign = xor_sum((unsigned char *) answer_body, 3);
+    unsigned char body_sign = xor_sum((unsigned char *) answer_body, body_size);
     answer[14] = body_sign;
 
     unsigned char head_sign = xor_sum((unsigned char *) answer, 15);
