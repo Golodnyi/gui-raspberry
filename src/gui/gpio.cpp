@@ -8,7 +8,6 @@ int PIN;
 using namespace std;
 
 int gpio(dataStruct *telemetry_values, int i){
-    cout << "gpio start"<< endl;
     QSqlQuery query;
     if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {
         cout << "SQL Query filed: " <<  query.lastError().text().toStdString() << endl;

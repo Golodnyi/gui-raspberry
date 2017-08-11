@@ -22,7 +22,7 @@ extern int open_socket(int listen_socket);
 extern int open_port(int fd);
 extern TResult read_head(int fd, int client_socket); //Считывание head
 extern int my_in(int fd, char* buff,int size, int client_socket);
-extern char answer_send(TResult returnValue, char *answer, char *answer_body, int body_size);
+extern char answer_collect(TResult returnValue, char *answer, char *answer_body, int body_size);
 extern int my_out(int fd, char* buff,int size, int client_socket);
 extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield);
@@ -70,7 +70,7 @@ void *flex(void *arg) {
         char answer[19];                // массив ответа
         char answer_body[3] = {'*', '<', 'S'};
         uint16_t body_size = 3;
-        answer_send(returnValue, (char *) answer, (char *) answer_body, body_size);
+        answer_collect(returnValue, (char *) answer, (char *) answer_body, body_size);
         copy(answer_body, answer_body + 3, answer + 16);
         int bytes = my_out(fd,(char*) answer, 19, client_socket);
         if(bytes == -1)
@@ -125,7 +125,7 @@ void *flex(void *arg) {
         answer_body_2[7] = protocol_version;
         answer_body_2[8] = struct_version;
         uint16_t body_size_2 = 9;
-        answer_send(returnValue, (char *) answer_2, (char *) answer_body_2, body_size_2);
+        answer_collect(returnValue, (char *) answer_2, (char *) answer_body_2, body_size_2);
         copy(answer_body_2, answer_body_2 + 9, answer_2 + 16);
 
         int bytes_2 = my_out(fd,(char*) answer_2, 25, client_socket);
@@ -178,7 +178,7 @@ void *flex(void *arg) {
                         float c = round(speed.speed*100)/100.0;
                         telemetry_values[i].value = QString::fromStdString(to_string(c));
                         cout << telemetry_values[i].alias.toStdString() << " = " << c << " Float";
-                        cout << " = " << telemetry_values[i].value.toStdString() << "округленное значение с сокета" << endl;
+                        cout << " = " << telemetry_values[i].value.toStdString() << " округленное значение с сокета" << endl;
                     } else {
                         cout << "mistake, 4 bytes" << endl;
                     }

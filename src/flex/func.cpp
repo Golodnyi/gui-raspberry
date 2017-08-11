@@ -83,15 +83,6 @@ TResult read_head(int fd, int client_socket) {
 
     copy(preamble,preamble+4,returnValue.preamble);
     cout<< returnValue.preamble<< endl;
-/**
-    my_in(fd,(char*)returnValue.preamble, 4, client_socket);
-    cout<< returnValue.preamble<< endl;
-    if (returnValue.preamble == "@NTC"){
-        cout<< "preamble success" << endl;
-    }
-    else{
-        cout<< "preamble mistake" << endl;
-    }**/
 
     char head[12];
     my_in(fd,(char*)head, 12, client_socket);
@@ -136,7 +127,7 @@ TResult read_head(int fd, int client_socket) {
     return (returnValue);
 }
 
-char answer_send(TResult returnValue, char *answer, char *answer_body, int body_size) {
+char answer_collect(TResult returnValue, char *answer, char *answer_body, int body_size) {
     copy(returnValue.preamble, returnValue.preamble + 4, answer);    // записываем преамбулу в ответ
     short int k = 0;
     for (int i = 4; i < 8; i++) {            // записываем IDs ответ
