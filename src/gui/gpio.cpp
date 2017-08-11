@@ -1,12 +1,13 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <QtSql/QtSql>
+#include <src/struct.h>
 
 int PIN;
 
 using namespace std;
 
-int gpio(){
+int gpio(dataStruct *telemetry_values, int i){
     cout << "gpio start"<< endl;
     QSqlQuery query;
     if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {
@@ -23,10 +24,16 @@ int gpio(){
 
     pinMode (PIN, OUTPUT) ;     // Устанавливаем порт на вывод
 
-            digitalWrite(PIN, LOW);
-            delay(638);
+    if (telemetry_values[i].color == "red")
+    {
             digitalWrite(PIN, HIGH);
-            delay(638);
+            delay(1000);
+            digitalWrite(PIN, LOW);
+            delay(1000);
+    }
+    else{
+        digitalWrite(PIN, LOW);
+    }
 
     return (0); // Выход из программы
 }
