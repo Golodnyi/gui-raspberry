@@ -19,6 +19,7 @@ int my_in(int fd, char *buff, int size, int client_socket) {      //считыв
         for (int i = 0; i < size; i++) {
             cout << buff[i];
         }
+        cout << endl;
         return result;
     } else {
         result = recv(client_socket, buff, size, 0);
