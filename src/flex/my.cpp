@@ -15,6 +15,10 @@ int my_in(int fd, char *buff, int size, int client_socket) {      //считыв
             char *errmsg = strerror(errno);
             printf("error: %s\n", errmsg);
         }
+        cout << "read " << size << " bytes: ";
+        for (int i = 0; i < size; i++) {
+            cout << buff[i];
+        }
         return result;
     } else {
         result = recv(client_socket, buff, size, 0);
