@@ -28,6 +28,7 @@ extern unsigned char crc8_calc(unsigned char *lp_block, unsigned int len);
 extern void *TelemetryConvert(dataStruct *telemetry_values,
                               bitset<85> bitfield);
 extern void close(int *a);
+extern string ftos(float f, int nd);
 
 void *flex(void *arg) {
   dataStruct *telemetry_values = (dataStruct *)arg;
@@ -187,8 +188,8 @@ void *flex(void *arg) {
             for (int j = 0; j < 4; j++) {
               speed.speedData[j] = buff_3_2[j];
             }
-            float c = round(speed.speed * 100) / 100.0;
-            telemetry_values[i].value = QString::fromStdString(to_string(c));
+            string c = ftos(speed.speed, 2);
+            telemetry_values[i].value = QString::fromStdString(c);
             cout << telemetry_values[i].alias.toStdString() << " = " << c
                  << " Float";
             cout << " = " << telemetry_values[i].value.toStdString()
