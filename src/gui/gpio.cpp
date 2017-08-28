@@ -1,5 +1,7 @@
 #include <iostream>
+#if defined(RPI)
 #include <wiringPi.h>
+#endif
 #include <QtSql/QtSql>
 #include <src/struct.h>
 
@@ -8,6 +10,7 @@ int PIN;
 using namespace std;
 
 int gpio(dataStruct *telemetry_values, int i){
+    #if defined(RPI)
     QSqlQuery query;
     if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {
         cout << "SQL Query filed: " <<  query.lastError().text().toStdString() << endl;
@@ -35,6 +38,9 @@ int gpio(dataStruct *telemetry_values, int i){
     }
 
     return (0); // Выход из программы
+    #else
+    return (1);
+    #endif
 }
 
 
