@@ -16,3 +16,4 @@ gr.db
 !/src/db/gr.db
 /guiraspberry_autogen/
 .vscode
+build
