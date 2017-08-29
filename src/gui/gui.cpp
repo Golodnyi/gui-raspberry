@@ -18,7 +18,7 @@ QPushButton *soundBtn;
 bool sound = true;
 
 extern void *flex(void *arg);
-extern void connect(QLabel *label);
+extern void connect(QLabel *label, string path);
 extern dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label);
 extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item, bool sound);
 void soundBtnClick()  {
@@ -62,6 +62,14 @@ void *update(void *arg, bitset<85> bitfield) {
   }
   cout << "end update" << endl;
 }
+
+string path(char *argv[]) {
+  string aux(argv[0]);
+  int pos = aux.rfind('/');
+  string path = aux.substr(0, pos + 1);
+  return path;
+}
+
 int gui_init(int argc, char *argv[]) {
   QApplication app(argc, argv); //(постоянная) приложение
 
@@ -79,7 +87,7 @@ int gui_init(int argc, char *argv[]) {
 
   dataStruct telemetry_values[85];
 
-  connect(label);
+  connect(label, path(argv));
   getTelemetry((dataStruct *)telemetry_values, label);
 
   listWidget = new QListWidget;
