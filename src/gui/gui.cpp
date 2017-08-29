@@ -73,7 +73,6 @@ int gui_init(int argc, char *argv[]) {
   listWidget1 = new QListWidget;
   listWidget1->setFont(QFont("Times", 16, QFont::Normal));
   QListWidgetItem *Item1 = new QListWidgetItem;
-  Item1->setText(QString::fromStdString("Ожидание данных"));
   listWidget1->insertItem(0, Item1);
 
   QGridLayout *MainLayout = new QGridLayout();
