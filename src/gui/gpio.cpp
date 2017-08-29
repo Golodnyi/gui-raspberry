@@ -9,7 +9,10 @@ int PIN;
 
 using namespace std;
 
-int gpio(dataStruct *telemetry_values, int i) {
+int gpio(dataStruct *telemetry_values, int i, bool sound) {
+  if (!sound) {
+    return 0;
+  }
 #if defined(__arm__)
   QSqlQuery query;
   if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {

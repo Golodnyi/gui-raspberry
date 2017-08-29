@@ -1,9 +1,11 @@
 #include <QApplication>
 #include <QGridLayout>
 #include <QListWidget>
+#include <QPushButton>
 #include <QtGui>
 #include <QLabel>
 #include <QStatusBar>
+#include <QObject>
 #include <bitset>
 #include <iostream>
 #include <src/struct.h>
@@ -12,12 +14,21 @@ using namespace std;
 
 QListWidget *listWidget;
 QListWidget *listWidget1;
+QPushButton *soundBtn;
+bool sound = true;
 
 extern void *flex(void *arg);
 extern void connect(QLabel *label);
 extern dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label);
-extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item);
-
+extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item, bool sound);
+void soundBtnClick()  {
+  sound = !sound;
+  if (sound) {
+    soundBtn->setText("Отключить звук");
+  } else {
+    soundBtn->setText("Включить звук");
+  }
+}
 void *update(void *arg, bitset<85> bitfield) {
   dataStruct *telemetry_values = (dataStruct *)arg;
   cout << "update" << endl;
@@ -36,7 +47,7 @@ void *update(void *arg, bitset<85> bitfield) {
                        (telemetry_values[i].unit));
         listWidget1->insertItem(i, Item1);
 
-        color(telemetry_values, i, Item1);
+        color(telemetry_values, i, Item1, sound);
       } else {
         QListWidgetItem *Item = new QListWidgetItem;
         Item->setText((telemetry_values[i].name) + ": " +
@@ -44,7 +55,7 @@ void *update(void *arg, bitset<85> bitfield) {
                       (telemetry_values[i].unit));
         listWidget->insertItem(i, Item);
 
-        color(telemetry_values, i, Item);
+        color(telemetry_values, i, Item, sound);
       }
       cout << telemetry_values[i].value.toStdString() << endl;
     }
@@ -55,9 +66,15 @@ int gui_init(int argc, char *argv[]) {
   QApplication app(argc, argv); //(постоянная) приложение
 
   QWidget *window = new QWidget;
+
   QLabel *label = new QLabel("Загрузка приложения");
   QStatusBar *statusBar = new QStatusBar(window);
   statusBar->addWidget(label);
+
+  soundBtn = new QPushButton("Отключить звук", window);
+  QObject::connect(soundBtn, &QPushButton::clicked, soundBtnClick);
+  QStatusBar *buttonsBar = new QStatusBar(window);
+  buttonsBar->addWidget(soundBtn);
 
   dataStruct telemetry_values[85];
 
@@ -79,7 +96,8 @@ int gui_init(int argc, char *argv[]) {
   MainLayout->addWidget(listWidget, 0, 0);
   MainLayout->addWidget(listWidget1, 0, 1);
   MainLayout->addWidget(statusBar, 1, 0);
-
+  MainLayout->addWidget(buttonsBar, 1, 1);
+  
   window->setLayout(MainLayout);
   window->showFullScreen();
 
