@@ -26,6 +26,6 @@ int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item, bool sound
     Item->setText(((telemetry_values[i].name) + ": " +
                    (telemetry_values[i].value) + " (не переведено)"));
   } else {
-    Item->setBackground(Qt::green);
+    // Item->setBackground(Qt::green);
   }
 }
