@@ -1,14 +1,17 @@
 #include <QApplication>
 #include <QGridLayout>
-#include <QListWidget>
-#include <QPushButton>
-#include <QtGui>
 #include <QLabel>
-#include <QStatusBar>
+#include <QListWidget>
 #include <QObject>
+#include <QPushButton>
+#include <QStatusBar>
+#include <QtGui>
 #include <bitset>
 #include <iostream>
+#include <limits.h>
 #include <src/struct.h>
+#include <string>
+#include <unistd.h>
 
 using namespace std;
 
@@ -20,8 +23,9 @@ bool sound = true;
 extern void *flex(void *arg);
 extern void connect(QLabel *label, string path);
 extern dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label);
-extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item, bool sound);
-void soundBtnClick()  {
+extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
+                 bool sound);
+void soundBtnClick() {
   sound = !sound;
   if (sound) {
     soundBtn->setText("Отключить звук");
@@ -64,9 +68,18 @@ void *update(void *arg, bitset<85> bitfield) {
 }
 
 string path(char *argv[]) {
-  string aux(argv[0]);
+  char buff[PATH_MAX];
+  ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);
+  if (len == -1) {
+    exit(1);
+  }
+  buff[len] = '\0';
+  string path = string(buff);
+  char *cstr = new char[path.length() + 1];
+  strcpy(cstr, path.c_str());
+  string aux(cstr);
   int pos = aux.rfind('/');
-  string path = aux.substr(0, pos + 1);
+  path = aux.substr(0, pos + 1);
   return path;
 }
 
@@ -106,7 +119,7 @@ int gui_init(int argc, char *argv[]) {
   MainLayout->addWidget(listWidget1, 0, 1);
   MainLayout->addWidget(statusBar, 1, 0);
   MainLayout->addWidget(buttonsBar, 1, 1);
-  
+
   window->setLayout(MainLayout);
   window->showFullScreen();
 
