@@ -2,6 +2,8 @@
 #include <QGridLayout>
 #include <QListWidget>
 #include <QtGui>
+#include <QLabel>
+#include <QStatusBar>
 #include <bitset>
 #include <iostream>
 #include <src/struct.h>
@@ -12,8 +14,8 @@ QListWidget *listWidget;
 QListWidget *listWidget1;
 
 extern void *flex(void *arg);
-extern void connect();
-extern dataStruct getTelemetry(dataStruct *telemetry_values);
+extern void connect(QLabel *label);
+extern dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label);
 extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item);
 
 void *update(void *arg, bitset<85> bitfield) {
@@ -52,12 +54,16 @@ void *update(void *arg, bitset<85> bitfield) {
 int gui_init(int argc, char *argv[]) {
   QApplication app(argc, argv); //(постоянная) приложение
 
+  QWidget *window = new QWidget;
+  QLabel *label = new QLabel("Загрузка приложения");
+  QStatusBar *statusBar = new QStatusBar(window);
+  statusBar->addWidget(label);
+
   dataStruct telemetry_values[85];
 
-  connect();
-  getTelemetry((dataStruct *)telemetry_values);
+  connect(label);
+  getTelemetry((dataStruct *)telemetry_values, label);
 
-  QWidget *window = new QWidget;
   listWidget = new QListWidget;
   listWidget->setFont(QFont("Times", 16, QFont::Normal));
   QListWidgetItem *Item = new QListWidgetItem;
@@ -73,6 +79,7 @@ int gui_init(int argc, char *argv[]) {
   QGridLayout *MainLayout = new QGridLayout();
   MainLayout->addWidget(listWidget, 0, 0);
   MainLayout->addWidget(listWidget1, 0, 1);
+  MainLayout->addWidget(statusBar, 1, 0);
 
   window->setLayout(MainLayout);
   window->showFullScreen();
@@ -88,7 +95,6 @@ int gui_init(int argc, char *argv[]) {
   }
 
   qRegisterMetaType<QVector<int>>("QVector<int>");
-
   int code = app.exec();
   return code;
 }

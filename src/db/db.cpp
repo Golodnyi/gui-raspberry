@@ -1,5 +1,6 @@
 #include <QtGui>
 #include <QtSql/QtSql>
+#include <QLabel>
 #include <bitset>
 #include <iostream>
 #include <src/struct.h>
@@ -11,24 +12,29 @@ extern void *update(void *arg, bitset<85> bitfield);
 
 QSqlDatabase sdb;
 
-void connect() {
+void connect(QLabel *label) {
   sdb = QSqlDatabase::addDatabase("QSQLITE");
   sdb.setDatabaseName("gr.db");
 
   if (!sdb.open()) {
     cout << "Filed sql lite" << endl;
-    exit(0);
+    label->setText("Ошибка: база данных не найдена.");
+    exit(1);
   }
   cout << "Connect to db" << endl;
+  label->setText("База данных загружена.");
 }
 
-dataStruct getTelemetry(dataStruct *telemetry_values) {
+dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
   cout << "Start get telemetry" << endl;
   QSqlQuery query;
   if (!query.exec(("SELECT * FROM telemetry"))) {
+    label->setText(QString::fromStdString("Ошибка: SQL Query filed: " + query.lastError().text().toStdString()));
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
          << endl;
+    exit(1);
   }
+  label->setText("Телеметрические данные загружены");
   int i = 0;
   while (query.next()) {
     telemetry_values[i].alias = query.value(0).toString();
