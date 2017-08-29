@@ -12,6 +12,7 @@ int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item) {
   QTime time;
   time.setHMS(0, 0, 0);
   time.start();
+  Item->setFlags(Item->flags() & ~Qt::ItemIsSelectable);
   if (telemetry_values[i].color == "red") {
     Item->setBackground(Qt::red);
     gpio(telemetry_values, i);
