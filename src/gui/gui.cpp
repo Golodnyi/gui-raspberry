@@ -72,6 +72,7 @@ int gui_init(int argc, char *argv[]) {
   statusBar->addWidget(label);
 
   soundBtn = new QPushButton("Отключить звук", window);
+  soundBtn->setMinimumHeight(40);
   QObject::connect(soundBtn, &QPushButton::clicked, soundBtnClick);
   QStatusBar *buttonsBar = new QStatusBar(window);
   buttonsBar->addWidget(soundBtn);
