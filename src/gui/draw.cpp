@@ -8,7 +8,8 @@ using namespace std;
 
 extern int gpio(dataStruct *telemetry_values, int i, bool sound);
 
-int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item, bool sound) {
+int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
+          bool sound) {
   QTime time;
   time.setHMS(0, 0, 0);
   time.start();

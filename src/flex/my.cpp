@@ -1,11 +1,11 @@
 #include <errno.h> /* Объявления кодов ошибок */
 #include <iostream>
+#include <math.h>
+#include <sstream>
 #include <stdio.h> /* Стандартные объявления ввода/вывода */
 #include <string.h> /* Объявления строковых функций */
 #include <sys/socket.h>
 #include <unistd.h> /* Объявления стандартных функций UNIX */
-#include <sstream>
-#include <math.h>
 using namespace std;
 int result;
 
@@ -45,6 +45,6 @@ int my_out(int fd, char *buff, int size, int client_socket) { //отправка
 string ftos(float f, int nd) {
   ostringstream ostr;
   int tens = stoi("1" + string(nd, '0'));
-  ostr << round(f*tens)/tens;
+  ostr << round(f * tens) / tens;
   return ostr.str();
 }
