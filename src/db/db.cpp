@@ -15,7 +15,7 @@ QSqlDatabase sdb;
 void connect(QLabel *label, string path) {
   cout << path << endl;
   sdb = QSqlDatabase::addDatabase("QSQLITE");
-  sdb.setDatabaseName(QString::fromStdString(path + "src/db/gr.db"));
+  sdb.setDatabaseName(QString::fromStdString(path + "gr.db"));
 
   if (!sdb.open()) {
     cout << "Filed sql lite" << endl;
