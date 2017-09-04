@@ -58,7 +58,9 @@ void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield) {
   QSqlQuery query;
   for (int i = 0; i < 85; i++) {
     if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
-      derive(telemetry_values[i].filter, telemetry_values, i);
+      if (telemetry_values[i].filter.length()) {
+        derive(telemetry_values[i].filter, telemetry_values, i);
+      }
     }
   }
   cout << "End telemetry convert" << endl;
