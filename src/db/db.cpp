@@ -56,21 +56,9 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
 void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield) {
   cout << "Start telemetry convert" << endl;
   QSqlQuery query;
-  QString tab1 = "air_pressure";
-  QString tab2 = "oil_pressure_k19";
-  QString tab3 = "oil_pressure_k50";
-  QString tab4 = "vacuum_k19";
   for (int i = 0; i < 85; i++) {
     if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
-      if (telemetry_values[i].filter == tab1) {
-        derive(tab1, telemetry_values, i);
-      } else if (telemetry_values[i].filter == tab2) {
-        derive(tab2, telemetry_values, i);
-      } else if (telemetry_values[i].filter == tab3) {
-        derive(tab3, telemetry_values, i);
-      } else if (telemetry_values[i].filter == tab4) {
-        derive(tab4, telemetry_values, i);
-      }
+      derive(telemetry_values[i].filter, telemetry_values, i);
     }
   }
   cout << "End telemetry convert" << endl;
