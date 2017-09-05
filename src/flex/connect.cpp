@@ -53,7 +53,8 @@ int open_port(int fd) {
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
          << endl;
   }
-  while (query.next()) {
+  while (query.next())
+  {
     port = &query.value(0).toString().toStdString()[0];
   }
   cout << "port " << port << endl;

@@ -9,8 +9,21 @@ using namespace std;
 
 extern QString derive(QString tab, dataStruct *telemetry_values, int i);
 extern void *update(void *arg, bitset<85> bitfield);
+extern int PIN;
 
 QSqlDatabase sdb;
+
+void getPin(QLabel *label) {
+  QSqlQuery query;
+  if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {
+    cout << "SQL Query filed: " << query.lastError().text().toStdString()
+         << endl;
+  }
+  while (query.next()) {
+    PIN = query.value(0).toInt();
+    label->setText("Номер PIN загружен.");
+  }
+}
 
 void connect(QLabel *label, string path) {
   cout << path << endl;
@@ -24,6 +37,7 @@ void connect(QLabel *label, string path) {
   }
   cout << "Connect to db" << endl;
   label->setText("База данных загружена.");
+  getPin(label);
 }
 
 dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {

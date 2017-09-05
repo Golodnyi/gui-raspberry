@@ -36,31 +36,20 @@ void soundBtnClick() {
 void *update(void *arg, bitset<85> bitfield) {
   dataStruct *telemetry_values = (dataStruct *)arg;
   cout << "update" << endl;
-  short int x = 0;
-  short int y = 0;
   listWidget->clear();
   listWidget1->clear();
   for (int i = 0; i < 85; i++) {
     if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
-      x = listWidget->count();
-      y = listWidget1->count();
-      if (x > y) {
-        QListWidgetItem *Item1 = new QListWidgetItem;
-        Item1->setText((telemetry_values[i].name) + ": " +
-                       (telemetry_values[i].value) + " " +
-                       (telemetry_values[i].unit));
-        listWidget1->insertItem(i, Item1);
-
-        color(telemetry_values, i, Item1, sound);
+      QListWidgetItem *Item = new QListWidgetItem;
+      Item->setText((telemetry_values[i].name) + ": " +
+                    (telemetry_values[i].value) + " " +
+                    (telemetry_values[i].unit));
+      if (i % 2) {
+        listWidget1->insertItem(i, Item);
       } else {
-        QListWidgetItem *Item = new QListWidgetItem;
-        Item->setText((telemetry_values[i].name) + ": " +
-                      (telemetry_values[i].value) + " " +
-                      (telemetry_values[i].unit));
         listWidget->insertItem(i, Item);
-
-        color(telemetry_values, i, Item, sound);
       }
+      color(telemetry_values, i, Item, sound);
       cout << telemetry_values[i].value.toStdString() << endl;
     }
   }

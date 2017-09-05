@@ -5,7 +5,7 @@
 #include <QtSql/QtSql>
 #include <src/struct.h>
 
-int PIN;
+extern int PIN;
 
 using namespace std;
 
@@ -14,15 +14,6 @@ int gpio(dataStruct *telemetry_values, int i, bool sound) {
     return 0;
   }
 #if defined(__arm__)
-  QSqlQuery query;
-  if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {
-    cout << "SQL Query filed: " << query.lastError().text().toStdString()
-         << endl;
-  }
-  while (query.next()) {
-    PIN = query.value(0).toInt();
-  }
-
   if (wiringPiSetup() == -1) { // Инициализация GPIO
     cout << "not found " << endl;
     return 1; //Завершение программы, если инициализация не удалась
@@ -33,6 +24,10 @@ int gpio(dataStruct *telemetry_values, int i, bool sound) {
   if (telemetry_values[i].color == "red") {
     digitalWrite(PIN, HIGH);
     delay(1000);
+    digitalWrite(PIN, LOW);
+  } else if (telemetry_values[i].color == "yellow") {
+    digitalWrite(PIN, HIGH);
+    delay(300);
     digitalWrite(PIN, LOW);
   }
 
