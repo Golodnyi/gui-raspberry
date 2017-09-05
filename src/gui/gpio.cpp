@@ -34,9 +34,6 @@ int gpio(dataStruct *telemetry_values, int i, bool sound) {
     digitalWrite(PIN, HIGH);
     delay(1000);
     digitalWrite(PIN, LOW);
-    delay(1000);
-  } else {
-    digitalWrite(PIN, LOW);
   }
 
   return (0); // Выход из программы
