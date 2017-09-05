@@ -85,7 +85,7 @@ string path(char *argv[]) {
 
 int gui_init(int argc, char *argv[]) {
   QApplication app(argc, argv); //(постоянная) приложение
-  app.changeOverrideCursor(Qt::BlankCursor);
+  app.setOverrideCursor(Qt::BlankCursor);
   QWidget *window = new QWidget;
 
   QLabel *label = new QLabel("Загрузка приложения");
