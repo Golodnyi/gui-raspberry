@@ -36,7 +36,7 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
          << endl;
     exit(1);
   }
-  label->setText("Телеметрические данные загружены");
+  label->setText("Готово");
   int i = 0;
   while (query.next()) {
     telemetry_values[i].alias = query.value(0).toString();
