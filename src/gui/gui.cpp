@@ -85,7 +85,7 @@ string path(char *argv[]) {
 
 int gui_init(int argc, char *argv[]) {
   QApplication app(argc, argv); //(постоянная) приложение
-
+  app.changeOverrideCursor(Qt::BlankCursor);
   QWidget *window = new QWidget;
 
   QLabel *label = new QLabel("Загрузка приложения");
@@ -135,5 +135,6 @@ int gui_init(int argc, char *argv[]) {
 
   qRegisterMetaType<QVector<int>>("QVector<int>");
   int code = app.exec();
+  app.restoreOverrideCursor();
   return code;
 }
