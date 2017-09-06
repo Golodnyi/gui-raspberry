@@ -15,8 +15,8 @@
 
 using namespace std;
 
-QListWidget *listWidget;
-QListWidget *listWidget1;
+QListWidget *leftWidget;
+QListWidget *rightWidget;
 QPushButton *soundBtn;
 bool sound = true;
 
@@ -35,8 +35,8 @@ void soundBtnClick() {
 }
 void *update(void *arg, bitset<85> bitfield) {
   dataStruct *telemetry_values = (dataStruct *)arg;
-  listWidget->clear();
-  listWidget1->clear();
+  leftWidget->clear();
+  rightWidget->clear();
   for (int i = 0; i < 85; i++) {
     if (!telemetry_values[i].enable || !(bool)bitfield[i]) {
       continue;
@@ -47,9 +47,9 @@ void *update(void *arg, bitset<85> bitfield) {
                   (telemetry_values[i].value) + " " +
                   (telemetry_values[i].unit));
     if (i % 2) {
-      listWidget1->insertItem(i, Item);
+      leftWidget->insertItem(i, Item);
     } else {
-      listWidget->insertItem(i, Item);
+      rightWidget->insertItem(i, Item);
     }
     color(telemetry_values, i, Item, sound);
   }
@@ -91,20 +91,18 @@ int gui_init(int argc, char *argv[]) {
   connect(label, path(argv));
   getTelemetry((dataStruct *)telemetry_values, label);
 
-  listWidget = new QListWidget;
-  listWidget->setFont(QFont("Times", 16, QFont::Normal));
+  leftWidget = new QListWidget;
+  leftWidget->setFont(QFont("Times", 16, QFont::Normal));
   QListWidgetItem *Item = new QListWidgetItem;
   Item->setText(QString::fromStdString("Ожидание данных"));
-  listWidget->insertItem(0, Item);
+  leftWidget->insertItem(0, Item);
 
-  listWidget1 = new QListWidget;
-  listWidget1->setFont(QFont("Times", 16, QFont::Normal));
-  QListWidgetItem *Item1 = new QListWidgetItem;
-  listWidget1->insertItem(0, Item1);
+  rightWidget = new QListWidget;
+  rightWidget->setFont(QFont("Times", 16, QFont::Normal));
 
   QGridLayout *MainLayout = new QGridLayout();
-  MainLayout->addWidget(listWidget, 0, 0);
-  MainLayout->addWidget(listWidget1, 0, 1);
+  MainLayout->addWidget(leftWidget, 0, 0);
+  MainLayout->addWidget(rightWidget, 0, 1);
   MainLayout->addWidget(statusBar, 1, 0);
   MainLayout->addWidget(buttonsBar, 1, 1);
 
