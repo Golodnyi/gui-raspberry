@@ -58,9 +58,6 @@ void *update(void *arg, bitset<85> bitfield) {
 string path(char *argv[]) {
   char buff[PATH_MAX];
   ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);
-  if (len == -1) {
-    exit(1);
-  }
   buff[len] = '\0';
   string path = string(buff);
   char *cstr = new char[path.length() + 1];

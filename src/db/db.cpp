@@ -33,7 +33,6 @@ void connect(QLabel *label, string path) {
   if (!sdb.open()) {
     cout << "Filed sql lite" << endl;
     label->setText("Ошибка: база данных не найдена.");
-    exit(1);
   }
   cout << "Connect to db" << endl;
   label->setText("База данных загружена.");
@@ -48,7 +47,6 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
         "Ошибка: SQL Query filed: " + query.lastError().text().toStdString()));
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
          << endl;
-    exit(1);
   }
   label->setText("Готово");
   int i = 0;

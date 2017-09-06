@@ -86,7 +86,6 @@ int open_socket(int listen_socket) {
   if (result != 0) // проверка на ошибку инициализации адресса
   {
     cerr << "getaddrinfo failed: " << result << endl;
-    exit(1); // выход из программы
   }
   cout << "Socket open: " << result << endl;
 

@@ -13,7 +13,6 @@ void *warning(void *arg) {
 #if defined(__arm__)
   if (wiringPiSetup() == -1) { // Инициализация GPIO
     cout << "not found " << endl;
-    exit(1); //Завершение программы, если инициализация не удалась
   }
 
   pinMode(PIN, OUTPUT); // Устанавливаем порт на вывод
@@ -21,9 +20,6 @@ void *warning(void *arg) {
   digitalWrite(PIN, HIGH);
   delay(300);
   digitalWrite(PIN, LOW);
-  exit (0); // Выход из программы
-#else
-  exit (1);
 #endif
 }
 
@@ -31,7 +27,6 @@ void *danger(void *arg) {
 #if defined(__arm__)
   if (wiringPiSetup() == -1) { // Инициализация GPIO
     cout << "not found " << endl;
-    exit(1); //Завершение программы, если инициализация не удалась
   }
 
   pinMode(PIN, OUTPUT); // Устанавливаем порт на вывод
@@ -39,8 +34,5 @@ void *danger(void *arg) {
   digitalWrite(PIN, HIGH);
   delay(1000);
   digitalWrite(PIN, LOW);
-  exit (0); // Выход из программы
-#else
-  exit (1);
 #endif
 }
