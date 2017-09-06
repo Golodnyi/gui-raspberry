@@ -15,6 +15,7 @@ struct dataStruct {
   bool enable;    // значение из сокета
   QString value;  // значение датчика
   QString color;
+  time_t problemTime = 0;
 };
 
 struct TResult {
