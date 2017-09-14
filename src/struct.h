@@ -5,12 +5,13 @@
 #include <iostream>
 using namespace std;
 
-struct dataStruct {
-  QString alias; // англ название (numPage)
-  int byte;      // кол-во байт
-  QString type;  // тип предоставления данных
-  QString name;  // название датчика на русском (температура блока цилиндров)
-  QString unit; // мера измерения (км в час, цельясия...)
+struct dataStruct
+{
+  QString alias;  // англ название (numPage)
+  int byte;       // кол-во байт
+  QString type;   // тип предоставления данных
+  QString name;   // название датчика на русском (температура блока цилиндров)
+  QString unit;   // мера измерения (км в час, цельясия...)
   QString filter; // перевод значений
   bool enable;    // значение из сокета
   QString value;  // значение датчика
@@ -18,7 +19,8 @@ struct dataStruct {
   time_t problemTime = 0;
 };
 
-struct TResult {
+struct TResult
+{
   char preamble[4];
   uint32_t IDr;
   uint32_t IDs;

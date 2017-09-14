@@ -13,24 +13,29 @@ extern int PIN;
 
 QSqlDatabase sdb;
 
-void getPin(QLabel *label) {
+void getPin(QLabel *label)
+{
   QSqlQuery query;
-  if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'"))) {
+  if (!query.exec(("SELECT port FROM raspberry WHERE funk='speaker'")))
+  {
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
          << endl;
   }
-  while (query.next()) {
+  while (query.next())
+  {
     PIN = query.value(0).toInt();
     label->setText("Номер PIN загружен.");
   }
 }
 
-void connect(QLabel *label, string path) {
+void connect(QLabel *label, string path)
+{
   cout << path << endl;
   sdb = QSqlDatabase::addDatabase("QSQLITE");
   sdb.setDatabaseName(QString::fromStdString(path + "gr.db"));
 
-  if (!sdb.open()) {
+  if (!sdb.open())
+  {
     cout << "Filed sql lite" << endl;
     label->setText("Ошибка: база данных не найдена.");
   }
@@ -39,10 +44,12 @@ void connect(QLabel *label, string path) {
   getPin(label);
 }
 
-dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
+dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label)
+{
   cout << "Start get telemetry" << endl;
   QSqlQuery query;
-  if (!query.exec(("SELECT * FROM telemetry"))) {
+  if (!query.exec(("SELECT * FROM telemetry")))
+  {
     label->setText(QString::fromStdString(
         "Ошибка: SQL Query filed: " + query.lastError().text().toStdString()));
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
@@ -50,7 +57,8 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
   }
   label->setText("Готово");
   int i = 0;
-  while (query.next()) {
+  while (query.next())
+  {
     telemetry_values[i].alias = query.value(0).toString();
     telemetry_values[i].byte = query.value(1).toInt();
     telemetry_values[i].type = query.value(2).toString();
@@ -65,12 +73,16 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label) {
   return (*telemetry_values);
 }
 
-void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield) {
+void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield)
+{
   cout << "Start telemetry convert" << endl;
   QSqlQuery query;
-  for (int i = 0; i < 85; i++) {
-    if (telemetry_values[i].enable and (bool) bitfield[i] == 1) {
-      if (telemetry_values[i].filter.length()) {
+  for (int i = 0; i < 85; i++)
+  {
+    if (telemetry_values[i].enable and (bool) bitfield[i] == 1)
+    {
+      if (telemetry_values[i].filter.length())
+      {
         derive(telemetry_values[i].filter, telemetry_values, i);
       }
     }

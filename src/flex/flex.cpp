@@ -5,7 +5,7 @@
 #include <fcntl.h> /* Объявления управления файлами */
 #include <iostream>
 #include <src/struct.h>
-#include <stdio.h> /* Стандартные объявления ввода/вывода */
+#include <stdio.h>  /* Стандартные объявления ввода/вывода */
 #include <string.h> /* Объявления строковых функций */
 #include <sys/socket.h>
 #include <unistd.h> /* Объявления стандартных функций UNIX */
@@ -30,20 +30,26 @@ extern void *TelemetryConvert(dataStruct *telemetry_values,
 extern void close(int *a);
 extern string ftos(float f, int nd);
 
-void *flex(void *arg) {
+void *flex(void *arg)
+{
   dataStruct *telemetry_values = (dataStruct *)arg;
   vector<char> temp_vector;
 
   fd = open_port(fd);
 
-  if (fd == -1) {
+  if (fd == -1)
+  {
     listen_socket = open_socket(listen_socket);
   }
-  while (fd != -1 | (client_socket = accept(listen_socket, NULL, NULL))) {
-    if (fd != -1) {
+  while (fd != -1 | (client_socket = accept(listen_socket, NULL, NULL)))
+  {
+    if (fd != -1)
+    {
       a = fd;
       cout << "Start COM port " << endl;
-    } else {
+    }
+    else
+    {
       a = client_socket;
       cout << "Start socket " << endl;
     }
@@ -53,7 +59,8 @@ void *flex(void *arg) {
     char s[3];
 
     copy(returnValue.buff, returnValue.buff + 3, s);
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 0; i <= 2; i++)
+    {
       cout << s[i]; // первые 3 байта-идентификатор объекта
     }
 
@@ -62,7 +69,8 @@ void *flex(void *arg) {
 
     char IMEI[15]; // идентификатор устройства GSM модема
     copy(returnValue.buff + 4, returnValue.buff + 19, IMEI);
-    for (int i = 0; i <= 14; i++) {
+    for (int i = 0; i <= 14; i++)
+    {
       cout << IMEI[i];
     }
     cout << endl;
@@ -74,7 +82,8 @@ void *flex(void *arg) {
     answer_collect(returnValue, (char *)answer, (char *)answer_body, body_size);
     copy(answer_body, answer_body + 3, answer + 16);
     int bytes = my_out(fd, (char *)answer, 19, client_socket);
-    if (bytes == -1) {
+    if (bytes == -1)
+    {
       char *errmsg = strerror(errno);
       printf("%s\n", errmsg);
     }
@@ -85,7 +94,8 @@ void *flex(void *arg) {
 
     char FLEX[6];
     copy(returnValue.buff, returnValue.buff + 6, FLEX);
-    for (int i = 0; i <= 5; i++) {
+    for (int i = 0; i <= 5; i++)
+    {
       cout << FLEX[i];
     }
     cout << endl;
@@ -108,13 +118,16 @@ void *flex(void *arg) {
 
     bitset<85> bitfield;
     int g = 0;
-    for (int i = 0; i < bitfield_size; i++) {
-      for (int j = 7; j >= 0; j--) {
+    for (int i = 0; i < bitfield_size; i++)
+    {
+      for (int j = 7; j >= 0; j--)
+      {
         uint8_t tbyte = returnValue.buff[i + 10];
         bool state = (bool)(tbyte & (1 << j));
         bitfield[g] = state;
         cout << bitfield[g];
-        if (g >= 84) {
+        if (g >= 84)
+        {
           break;
         }
         g++;
@@ -136,19 +149,21 @@ void *flex(void *arg) {
     copy(answer_body_2, answer_body_2 + 9, answer_2 + 16);
 
     int bytes_2 = my_out(fd, (char *)answer_2, 25, client_socket);
-    if (bytes_2 == -1) {
+    if (bytes_2 == -1)
+    {
       char *errmsg = strerror(errno);
       printf("%s\n", errmsg);
     }
     cout << "Send " << bytes_2 << " bytes" << endl;
 
-    char buff_3_1[2]; // 3 пакет с текущим состоянием
+    char buff_3_1[2];                              // 3 пакет с текущим состоянием
     my_in(fd, (char *)buff_3_1, 2, client_socket); //связали сокет с буфером 3
     char index[2];
     copy(buff_3_1, buff_3_1 + 2,
          index); // перенесли первые 2 байта из сообщения
     temp_vector.resize(2);
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++)
+    {
       cout << index[i];
       temp_vector[i] = buff_3_1[i];
     }
@@ -161,12 +176,16 @@ void *flex(void *arg) {
     };
     su speed;
 
-    for (int i = 0; i < bitfield.size(); i++) {
-      if ((bool)bitfield[i] == 1) {
+    for (int i = 0; i < bitfield.size(); i++)
+    {
+      if ((bool)bitfield[i] == 1)
+      {
         buff_3_2.resize(telemetry_values[i].byte);
         my_in(fd, &buff_3_2[0], telemetry_values[i].byte, client_socket);
-        if (telemetry_values[i].byte == 4) {
-          if (telemetry_values[i].type == "I32") {
+        if (telemetry_values[i].byte == 4)
+        {
+          if (telemetry_values[i].type == "I32")
+          {
             int32_t a = ((int8_t)buff_3_2[3] << 24) +
                         ((int8_t)buff_3_2[2] << 16) +
                         ((int8_t)buff_3_2[1] << 8) + (int8_t)buff_3_2[0];
@@ -175,7 +194,9 @@ void *flex(void *arg) {
                  << " I32";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " значение с сокета" << endl;
-          } else if (telemetry_values[i].type == "U32") {
+          }
+          else if (telemetry_values[i].type == "U32")
+          {
             uint32_t b = ((uint8_t)buff_3_2[3] << 24) +
                          ((uint8_t)buff_3_2[2] << 16) +
                          ((uint8_t)buff_3_2[1] << 8) + (uint8_t)buff_3_2[0];
@@ -184,8 +205,11 @@ void *flex(void *arg) {
                  << " U32";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " значение с сокета" << endl;
-          } else if (telemetry_values[i].type == "Float") {
-            for (int j = 0; j < 4; j++) {
+          }
+          else if (telemetry_values[i].type == "Float")
+          {
+            for (int j = 0; j < 4; j++)
+            {
               speed.speedData[j] = buff_3_2[j];
             }
             string c = ftos(speed.speed, 2);
@@ -194,46 +218,64 @@ void *flex(void *arg) {
                  << " Float";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " округленное значение с сокета" << endl;
-          } else {
+          }
+          else
+          {
             cout << "mistake, 4 bytes" << endl;
           }
-        } else if (telemetry_values[i].byte == 2) {
-          if (telemetry_values[i].type == "I16") {
+        }
+        else if (telemetry_values[i].byte == 2)
+        {
+          if (telemetry_values[i].type == "I16")
+          {
             int16_t d = ((int8_t)buff_3_2[1] << 8) + (int8_t)buff_3_2[0];
             telemetry_values[i].value = QString::fromStdString(to_string(d));
             cout << telemetry_values[i].alias.toStdString() << " = " << d
                  << " I16";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " значение с сокета" << endl;
-          } else if (telemetry_values[i].type == "U16") {
+          }
+          else if (telemetry_values[i].type == "U16")
+          {
             uint16_t e = ((uint8_t)buff_3_2[1] << 8) + (uint8_t)buff_3_2[0];
             telemetry_values[i].value = QString::fromStdString(to_string(e));
             cout << telemetry_values[i].alias.toStdString() << " = " << e
                  << " U16";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " значение с сокета" << endl;
-          } else {
+          }
+          else
+          {
             cout << "mistake, 2 bytes" << endl;
           }
-        } else if (telemetry_values[i].byte == 1) {
-          if (telemetry_values[i].type == "I8") {
+        }
+        else if (telemetry_values[i].byte == 1)
+        {
+          if (telemetry_values[i].type == "I8")
+          {
             int8_t f = (int8_t)buff_3_2[0];
             telemetry_values[i].value = QString::fromStdString(to_string(f));
             cout << telemetry_values[i].alias.toStdString() << " = " << f
                  << " I8";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " значение с сокета" << endl;
-          } else if (telemetry_values[i].type == "U8") {
+          }
+          else if (telemetry_values[i].type == "U8")
+          {
             uint8_t g = (uint8_t)buff_3_2[0];
             telemetry_values[i].value = QString::fromStdString(to_string(g));
             cout << telemetry_values[i].alias.toStdString() << " = " << g
                  << " U8";
             cout << " = " << telemetry_values[i].value.toStdString()
                  << " значение с сокета" << endl;
-          } else {
+          }
+          else
+          {
             cout << "mistake, 1 bytes" << endl;
           }
-        } else {
+        }
+        else
+        {
           cout << "mistake" << endl;
         }
         temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
@@ -248,9 +290,12 @@ void *flex(void *arg) {
 
     unsigned char buff_val_3_2 =
         crc8_calc((unsigned char *)temp_vector.data(), temp_vector.size());
-    if (buff_val_3_2 == crc8) {
+    if (buff_val_3_2 == crc8)
+    {
       cout << "crc8 success" << endl;
-    } else {
+    }
+    else
+    {
       cout << "crc8 fail: " << buff_val_3_2 << crc8 << endl;
       continue;
     }
@@ -262,7 +307,8 @@ void *flex(void *arg) {
     answer_3[2] = crc8_calc((unsigned char *)answer_3, 2);
 
     int bytes_3 = my_out(fd, (char *)answer_3, 3, client_socket);
-    if (bytes_3 == -1) {
+    if (bytes_3 == -1)
+    {
       char *errmsg = strerror(errno);
       printf("%s\n", errmsg);
     }

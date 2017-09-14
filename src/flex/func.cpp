@@ -4,10 +4,12 @@
 using namespace std;
 
 extern int my_in(int fd, char *buff, int size, int client_socket);
-unsigned char xor_sum(unsigned char *buffer, unsigned int length) {
+unsigned char xor_sum(unsigned char *buffer, unsigned int length)
+{
   unsigned char temp_sum = 0;
 
-  while (length-- > 0) {
+  while (length-- > 0)
+  {
     temp_sum ^= *buffer++;
   }
   return (temp_sum);
@@ -38,28 +40,34 @@ const unsigned char crc8_table[256] = {
     0xFF, 0xCE, 0x9D, 0xAC};
 unsigned char
 crc8_calc(unsigned char *lp_block, /* (вх) указатель на буфер с данными */
-          unsigned int len /* (вх) количество байт для подсчета */
-          ) {
+          unsigned int len         /* (вх) количество байт для подсчета */
+          )
+{
   unsigned char crc = 0xFF;
-  while (len--) {
+  while (len--)
+  {
     crc = crc8_table[crc ^ *lp_block++];
   }
   return crc;
 }
 
-TResult read_head(int fd, int client_socket) {
+TResult read_head(int fd, int client_socket)
+{
 
   TResult returnValue;
   char preamble[4] = {'@', 'N', 'T', 'C'};
   char c[1];
   int i = 0;
-  while (true) {
+  while (true)
+  {
     my_in(fd, (char *)c, 1, client_socket);
-    if (preamble[i] != c[0]) {
+    if (preamble[i] != c[0])
+    {
       i = 0;
     }
 
-    if (i == 3) {
+    if (i == 3)
+    {
       break;
     }
 
@@ -92,9 +100,12 @@ TResult read_head(int fd, int client_socket) {
   // создаем массив, для хранения пакета и считываем в него данные
 
   unsigned char buff_val = xor_sum((unsigned char *)returnValue.buff, 19);
-  if (buff_val == returnValue.CSd) {
+  if (buff_val == returnValue.CSd)
+  {
     cout << "CSd success" << endl;
-  } else {
+  }
+  else
+  {
     cout << "CSd fail" << endl;
   }
 
@@ -104,9 +115,12 @@ TResult read_head(int fd, int client_socket) {
 
   unsigned char CSp_val = xor_sum((unsigned char *)CSp, 15);
 
-  if (CSp_val == returnValue.CSp) {
+  if (CSp_val == returnValue.CSp)
+  {
     cout << "CSp success" << endl;
-  } else {
+  }
+  else
+  {
     cout << "CSp fail, my:" << CSp_val << " input: " << returnValue.CSp
          << endl; // проверяем заголовок (CSp-контр.сумма заголовка, head-16
                   // байтовый заголовок пакета)
@@ -115,21 +129,25 @@ TResult read_head(int fd, int client_socket) {
 }
 
 char answer_collect(TResult returnValue, char *answer, char *answer_body,
-                    int body_size) {
+                    int body_size)
+{
   copy(returnValue.preamble, returnValue.preamble + 4,
        answer); // записываем преамбулу в ответ
   short int k = 0;
-  for (int i = 4; i < 8; i++) { // записываем IDs ответ
+  for (int i = 4; i < 8; i++)
+  { // записываем IDs ответ
     answer[i] = (returnValue.IDs >> k) & 0xFF;
     k += 8;
   }
   k = 0;
-  for (int i = 8; i < 12; i++) { // записываем IDr в ответ
+  for (int i = 8; i < 12; i++)
+  { // записываем IDr в ответ
     answer[i] = (returnValue.IDr >> k) & 0xFF;
     k += 8;
   }
   k = 0;
-  for (int i = 12; i < 14; i++) { // записываем размер в ответ
+  for (int i = 12; i < 14; i++)
+  { // записываем размер в ответ
     answer[i] = (body_size << k) & 0xFF;
     k += 8;
   }

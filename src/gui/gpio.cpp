@@ -9,9 +9,11 @@ extern int PIN;
 
 using namespace std;
 
-void *warning(void *arg) {
+void *warning(void *arg)
+{
 #if defined(__arm__)
-  if (wiringPiSetup() == -1) { // Инициализация GPIO
+  if (wiringPiSetup() == -1)
+  { // Инициализация GPIO
     cout << "not found " << endl;
   }
 
@@ -23,9 +25,11 @@ void *warning(void *arg) {
 #endif
 }
 
-void *danger(void *arg) {
+void *danger(void *arg)
+{
 #if defined(__arm__)
-  if (wiringPiSetup() == -1) { // Инициализация GPIO
+  if (wiringPiSetup() == -1)
+  { // Инициализация GPIO
     cout << "not found " << endl;
   }
 

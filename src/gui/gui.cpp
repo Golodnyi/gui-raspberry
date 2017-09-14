@@ -25,20 +25,27 @@ extern void connect(QLabel *label, string path);
 extern dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label);
 extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
                  bool sound);
-void soundBtnClick() {
+void soundBtnClick()
+{
   sound = !sound;
-  if (sound) {
+  if (sound)
+  {
     soundBtn->setText("Отключить звук");
-  } else {
+  }
+  else
+  {
     soundBtn->setText("Включить звук");
   }
 }
-void *update(void *arg, bitset<85> bitfield) {
+void *update(void *arg, bitset<85> bitfield)
+{
   dataStruct *telemetry_values = (dataStruct *)arg;
   leftWidget->clear();
   rightWidget->clear();
-  for (int i = 0; i < 85; i++) {
-    if (!telemetry_values[i].enable || !(bool)bitfield[i]) {
+  for (int i = 0; i < 85; i++)
+  {
+    if (!telemetry_values[i].enable || !(bool)bitfield[i])
+    {
       continue;
     }
     QListWidgetItem *Item = new QListWidgetItem;
@@ -46,16 +53,20 @@ void *update(void *arg, bitset<85> bitfield) {
     Item->setText((telemetry_values[i].name) + ": " +
                   (telemetry_values[i].value) + " " +
                   (telemetry_values[i].unit));
-    if (i % 2) {
+    if (i % 2)
+    {
       leftWidget->insertItem(i, Item);
-    } else {
+    }
+    else
+    {
       rightWidget->insertItem(i, Item);
     }
     color(telemetry_values, i, Item, sound);
   }
 }
 
-string path(char *argv[]) {
+string path(char *argv[])
+{
   char buff[PATH_MAX];
   ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);
   buff[len] = '\0';
@@ -68,7 +79,8 @@ string path(char *argv[]) {
   return path;
 }
 
-int gui_init(int argc, char *argv[]) {
+int gui_init(int argc, char *argv[])
+{
   QApplication app(argc, argv); //(постоянная) приложение
   app.setOverrideCursor(Qt::BlankCursor);
   QWidget *window = new QWidget;
@@ -109,7 +121,8 @@ int gui_init(int argc, char *argv[]) {
   pthread_t thread;
   int result = pthread_create(&thread, NULL, flex, &telemetry_values);
   {
-    if (result != 0) {
+    if (result != 0)
+    {
       perror("Создание первого потока!");
       return EXIT_FAILURE;
     }

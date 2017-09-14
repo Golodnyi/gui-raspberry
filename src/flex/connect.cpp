@@ -11,10 +11,12 @@ using namespace std;
 
 char *port;
 
-int set_interface_attribs(int fd, int speed, int parity) {
+int set_interface_attribs(int fd, int speed, int parity)
+{
   struct termios tty;
   memset(&tty, 0, sizeof tty);
-  if (tcgetattr(fd, &tty) != 0) {
+  if (tcgetattr(fd, &tty) != 0)
+  {
     return -1;
   }
 
@@ -40,16 +42,19 @@ int set_interface_attribs(int fd, int speed, int parity) {
   tty.c_cflag &= ~CSTOPB;
   tty.c_cflag &= ~CRTSCTS;
 
-  if (tcsetattr(fd, TCSANOW, &tty) != 0) {
+  if (tcsetattr(fd, TCSANOW, &tty) != 0)
+  {
     return -1;
   }
   return 0;
 }
 
-int open_port(int fd) {
+int open_port(int fd)
+{
 
   QSqlQuery query;
-  if (!query.exec(("SELECT port FROM raspberry WHERE funk='com_port'"))) {
+  if (!query.exec(("SELECT port FROM raspberry WHERE funk='com_port'")))
+  {
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
          << endl;
   }
@@ -59,10 +64,13 @@ int open_port(int fd) {
   }
   cout << "port " << port << endl;
   fd = open(port, O_RDWR | O_NOCTTY);
-  if (fd == -1) {
+  if (fd == -1)
+  {
     //порт не открывается
     perror("open_port: Unable to open ");
-  } else {
+  }
+  else
+  {
     cout << "com port open" << endl;
     int r = set_interface_attribs(fd, B9600, 0);
     cout << "set speed: " << r << endl;
@@ -71,19 +79,20 @@ int open_port(int fd) {
   return (fd);
 }
 
-int open_socket(int listen_socket) {
+int open_socket(int listen_socket)
+{
   struct addrinfo *addr =
       NULL;              // структура, хранящая информацию об IP-адресе  слущающего сокета
   struct addrinfo hints; // шаблон для инициализации структуры адреса
 
-  hints.ai_family = AF_INET; // использование сети для работы с сокетами
+  hints.ai_family = AF_INET;       // использование сети для работы с сокетами
   hints.ai_socktype = SOCK_STREAM; // Задаем потоковый тип сокета
   hints.ai_protocol = IPPROTO_TCP; // Используем протокол TCP
   hints.ai_flags = AI_PASSIVE;
 
   int result = getaddrinfo(NULL, "9000", &hints,
                            &addr); // задаем фактический адрес: IP и номер порта
-  if (result != 0) // проверка на ошибку инициализации адресса
+  if (result != 0)                 // проверка на ошибку инициализации адресса
   {
     cerr << "getaddrinfo failed: " << result << endl;
   }
@@ -92,13 +101,14 @@ int open_socket(int listen_socket) {
   listen_socket = socket(addr->ai_family, addr->ai_socktype,
                          addr->ai_protocol); // принимающий сокет
   bind(listen_socket, addr->ai_addr,
-       (int)addr->ai_addrlen); // привязываем сокет на IP-адресс из getaddrinfo
+       (int)addr->ai_addrlen);      // привязываем сокет на IP-адресс из getaddrinfo
   listen(listen_socket, SOMAXCONN); // ожидание соединения**/
 
   return listen_socket;
 }
 
-void close(int *a) {
+void close(int *a)
+{
   close(a);
   cout << "Close " << a << endl;
 }
