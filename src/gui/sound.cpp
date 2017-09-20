@@ -1,20 +1,24 @@
 #include <QSound>
+#include <string>
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 extern string PROGRAM_PATH;
 void *warning(void *arg)
 {
-    cout << "play warning: " << PROGRAM_PATH + "signal.wav" << endl;
-    QSound sound(QString::fromStdString(PROGRAM_PATH + "signal.wav"));
-    sound.setLoops(1);
-    sound.play();
+    string path = "aplay " + PROGRAM_PATH + "signal.wav";
+    const char *cstr = path.c_str();
+    system(cstr);
 }
 
 void *danger(void *arg)
 {
-    cout << "play danger: " << PROGRAM_PATH + "signal.wav" << endl;
+    string path = "aplay " + PROGRAM_PATH + "signal.wav";
+    const char *cstr = path.c_str();
+    system(cstr);
+    /**cout << "play danger: " << PROGRAM_PATH + "signal.wav" << endl;
     QSound sound(QString::fromStdString(PROGRAM_PATH + "signal.wav"));
     sound.setLoops(3);
-    sound.play();
+    sound.play();**/
 }
