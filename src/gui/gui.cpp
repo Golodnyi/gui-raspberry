@@ -98,7 +98,7 @@ int gui_init(int argc, char *argv[])
   MainLayout->addWidget(rightWidget, 0, 1);
   MainLayout->addWidget(statusBar, 1, 0);
 
-  window->setContentsMargins(56, 0, 0, 120);
+  window->setContentsMargins(14, 40, 14, 30);
   window->setLayout(MainLayout);
   window->showFullScreen();
 
