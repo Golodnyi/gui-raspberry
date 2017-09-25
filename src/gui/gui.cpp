@@ -73,9 +73,9 @@ int gui_init(int argc, char *argv[])
   QApplication app(argc, argv); //(постоянная) приложение
   app.setOverrideCursor(Qt::BlankCursor);
   QWidget *window = new QWidget;
-
+  
   QLabel *label = new QLabel("Загрузка приложения");
-  label->setFont(QFont("Times", 28, QFont::Normal));
+  label->setFont(QFont("Times", 22, QFont::Normal));
   QStatusBar *statusBar = new QStatusBar(window);
   statusBar->addWidget(label);
 
@@ -85,19 +85,20 @@ int gui_init(int argc, char *argv[])
   getTelemetry((dataStruct *)telemetry_values, label);
 
   leftWidget = new QListWidget;
-  leftWidget->setFont(QFont("Times", 42, QFont::Normal));
+  leftWidget->setFont(QFont("Times", 28, QFont::Normal));
   QListWidgetItem *Item = new QListWidgetItem;
   Item->setText(QString::fromStdString("Ожидание данных"));
   leftWidget->insertItem(0, Item);
 
   rightWidget = new QListWidget;
-  rightWidget->setFont(QFont("Times",42, QFont::Normal));
+  rightWidget->setFont(QFont("Times",28, QFont::Normal));
 
   QGridLayout *MainLayout = new QGridLayout();
   MainLayout->addWidget(leftWidget, 0, 0);
   MainLayout->addWidget(rightWidget, 0, 1);
   MainLayout->addWidget(statusBar, 1, 0);
 
+  window->setContentsMargins(120, 0, 0, 56);
   window->setLayout(MainLayout);
   window->showFullScreen();
 
