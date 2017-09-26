@@ -17,6 +17,7 @@ using namespace std;
 
 QListWidget *leftWidget;
 QListWidget *rightWidget;
+QWidget *window;
 bool sound = true;
 
 extern void *flex(void *arg);
@@ -27,6 +28,7 @@ extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
 extern string PROGRAM_PATH;
 void *update(void *arg, bitset<85> bitfield)
 {
+  window->setUpdatesEnabled(false);
   dataStruct *telemetry_values = (dataStruct *)arg;
   leftWidget->clear();
   rightWidget->clear();
@@ -51,6 +53,7 @@ void *update(void *arg, bitset<85> bitfield)
     }
     color(telemetry_values, i, Item, sound);
   }
+  window->setUpdatesEnabled(true);  
 }
 
 string path(char *argv[])
@@ -72,7 +75,7 @@ int gui_init(int argc, char *argv[])
 {
   QApplication app(argc, argv); //(постоянная) приложение
   app.setOverrideCursor(Qt::BlankCursor);
-  QWidget *window = new QWidget;
+  window = new QWidget;
   
   QLabel *label = new QLabel("Загрузка приложения");
   label->setFont(QFont("Times", 22, QFont::Normal));
