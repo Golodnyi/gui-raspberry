@@ -13,6 +13,7 @@ struct dataStruct
   QString name;   // название датчика на русском (температура блока цилиндров)
   QString unit;   // мера измерения (км в час, цельясия...)
   QString filter; // перевод значений
+  int position; //позиция в listview (0 - слева, 1 - справа)
   bool enable;    // значение из сокета
   QString value;  // значение датчика
   QString color;

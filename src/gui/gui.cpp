@@ -32,9 +32,9 @@ void *update(void *arg, bitset<85> bitfield)
   dataStruct *telemetry_values = (dataStruct *)arg;
   leftWidget->clear();
   rightWidget->clear();
-  int z = 0;
   for (int i = 0; i < 85; i++)
   {
+    cout << telemetry_values[i].name.toUtf8().constData() << ": " << telemetry_values[i].enable << endl;
     if (!telemetry_values[i].enable || !(bool)bitfield[i])
     {
       continue;
@@ -44,7 +44,7 @@ void *update(void *arg, bitset<85> bitfield)
     Item->setText((telemetry_values[i].name) + ": " +
                   (telemetry_values[i].value) + " " +
                   (telemetry_values[i].unit));
-    if (z % 2)
+    if (!telemetry_values[i].position)
     {
       leftWidget->insertItem(i, Item);
     }
@@ -52,7 +52,6 @@ void *update(void *arg, bitset<85> bitfield)
     {
       rightWidget->insertItem(i, Item);
     }
-    z++;
     color(telemetry_values, i, Item, sound);
   }
   window->setUpdatesEnabled(true);  

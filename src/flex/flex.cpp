@@ -100,21 +100,17 @@ void *flex(void *arg)
     }
     cout << endl;
 
-    uint8_t protocol =
-        (uint8_t)returnValue.buff[6]; // Условное обозначение протокола, в
+    uint8_t protocol = (uint8_t)returnValue.buff[6]; // Условное обозначение протокола, в
     // котором собирается работать устройство
-    cout << protocol << endl;
+    cout << "protocol: " << protocol << endl;
     uint8_t protocol_version = (uint8_t)returnValue.buff[7]; // Версия протокола
-    cout << protocol_version << endl;
-    uint8_t struct_version =
-        (uint8_t)returnValue.buff[8]; // Версия структуры данных
-    cout << struct_version << endl;
-    uint8_t data_size =
-        (uint8_t)
-            returnValue.buff[9]; // Размер последующего конфигурационного поля
-    cout << data_size << endl;
+    cout << "version: " << protocol_version << endl;
+    uint8_t struct_version = (uint8_t)returnValue.buff[8]; // Версия структуры данных
+    cout << "struct: " << struct_version << endl;
+    uint8_t data_size = (uint8_t)returnValue.buff[9]; // Размер последующего конфигурационного поля
+    cout << "data size: " << data_size << endl;
     uint8_t bitfield_size = data_size / 8 + 1;
-    cout << "Bitfield size " << bitfield_size << " bytes" << endl;
+    cout << "bitfield size " << bitfield_size << " bytes" << endl;
 
     bitset<85> bitfield;
     int g = 0;

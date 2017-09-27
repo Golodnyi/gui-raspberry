@@ -66,6 +66,7 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label)
     telemetry_values[i].unit = query.value(4).toString();
     telemetry_values[i].filter = query.value(5).toString();
     telemetry_values[i].enable = query.value(6).toBool();
+    telemetry_values[i].position = query.value(7).toInt();
     ;
     i += 1;
   }
