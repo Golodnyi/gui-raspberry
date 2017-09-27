@@ -90,13 +90,13 @@ int gui_init(int argc, char *argv[])
   getTelemetry((dataStruct *)telemetry_values, label);
 
   leftWidget = new QListWidget;
-  leftWidget->setFont(QFont("Times", 28, QFont::Normal));
+  leftWidget->setFont(QFont("Times", 30, QFont::Normal));
   QListWidgetItem *Item = new QListWidgetItem;
   Item->setText(QString::fromStdString("Ожидание данных"));
   leftWidget->insertItem(0, Item);
 
   rightWidget = new QListWidget;
-  rightWidget->setFont(QFont("Times",28, QFont::Normal));
+  rightWidget->setFont(QFont("Times",30, QFont::Normal));
 
   QGridLayout *MainLayout = new QGridLayout();
   MainLayout->addWidget(leftWidget, 0, 0);
