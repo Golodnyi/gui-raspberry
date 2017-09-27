@@ -223,7 +223,7 @@ void *flex(void *arg)
         uint8_t rd = (uint8_t)buff_3_2[0];
         telemetry_values[i].value = QString::number(rd);        
       }
-      cout << telemetry_values[i].name << ": " << telemetry_values[i].value << endl;
+      cout << telemetry_values[i].name.toUtf8().constData() << ": " << telemetry_values[i].value.toUtf8().constData() << endl;
       temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
       buff_3_2.clear();
     }
@@ -259,7 +259,6 @@ void *flex(void *arg)
     cout << "Send " << bytes_3 << " bytes" << endl;
 
     TelemetryConvert(telemetry_values, bitfield);
-    cout << "++++++ END ++++++" << endl;
   }
 
   close(a);

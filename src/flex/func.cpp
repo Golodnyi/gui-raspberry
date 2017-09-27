@@ -106,7 +106,7 @@ TResult read_head(int fd, int client_socket)
   }
   else
   {
-    cout << "CSd fail, my:" << CSd_val << " input: " << returnValue.CSd
+    cout << "CSd fail, my:" << CSd_val << " input: " << returnValue.CSd << endl;
   }
 
   char CSp[16];
