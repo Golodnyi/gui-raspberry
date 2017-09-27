@@ -82,6 +82,12 @@ void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield)
   {
     if (telemetry_values[i].enable and (bool) bitfield[i] == 1)
     {
+      /**
+       * TODO: Моточасы переводятся в часы хардкодом
+       **/
+      if (telemetry_values[i].alias == "Motochas") {
+        telemetry_values[i].value = QString::number((int)(telemetry_values[i].value.toInt() / 3600));
+      }
       if (telemetry_values[i].filter.length())
       {
         derive(telemetry_values[i].filter, telemetry_values, i);
