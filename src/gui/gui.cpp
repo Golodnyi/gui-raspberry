@@ -32,6 +32,7 @@ void *update(void *arg, bitset<85> bitfield)
   dataStruct *telemetry_values = (dataStruct *)arg;
   leftWidget->clear();
   rightWidget->clear();
+  int z = 0;
   for (int i = 0; i < 85; i++)
   {
     if (!telemetry_values[i].enable || !(bool)bitfield[i])
@@ -43,7 +44,7 @@ void *update(void *arg, bitset<85> bitfield)
     Item->setText((telemetry_values[i].name) + ": " +
                   (telemetry_values[i].value) + " " +
                   (telemetry_values[i].unit));
-    if (i % 2)
+    if (z % 2)
     {
       leftWidget->insertItem(i, Item);
     }
@@ -51,6 +52,7 @@ void *update(void *arg, bitset<85> bitfield)
     {
       rightWidget->insertItem(i, Item);
     }
+    z++;
     color(telemetry_values, i, Item, sound);
   }
   window->setUpdatesEnabled(true);  
