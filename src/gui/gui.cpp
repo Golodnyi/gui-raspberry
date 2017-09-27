@@ -34,7 +34,6 @@ void *update(void *arg, bitset<85> bitfield)
   rightWidget->clear();
   for (int i = 0; i < 85; i++)
   {
-    cout << telemetry_values[i].name.toUtf8().constData() << ": " << telemetry_values[i].enable << endl;
     if (!telemetry_values[i].enable || !(bool)bitfield[i])
     {
       continue;
