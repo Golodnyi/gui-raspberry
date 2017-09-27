@@ -3,11 +3,30 @@
 #include <QtGui>
 #include <iostream>
 #include <src/struct.h>
+#include <string>
 
 using namespace std;
 
 extern void *warning(void *arg);
 extern void *danger(void *arg);
+
+string timeConv(int s)
+{
+  int m, h;
+  m = (s / 60) % 60;
+  h = (s / 360) % 24;
+  s = s % 60;
+  if (h)
+  {
+    return to_string(h) + " ч. " + to_string(m) + " м. " + to_string(s) + " с. назад";
+  }
+  else if (m)
+  {
+    return to_string(m) + " м. " + to_string(s) + " с. назад";
+  }
+
+  return to_string(s) + " с. назад";
+}
 
 int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
           bool sound)
@@ -18,12 +37,8 @@ int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
     {
       telemetry_values[i].problemTime = time(NULL);
     }
-
-    Item->setText(telemetry_values[i].name + ": " + telemetry_values[i].value +
-                  " " + telemetry_values[i].unit + "\n" +
-                  QString::fromStdString(to_string((int)difftime(
-                      time(NULL), telemetry_values[i].problemTime))) +
-                  " сек. Назад");
+    int seconds = (int)(difftime(time(NULL), telemetry_values[i].problemTime) + 1);
+    Item->setText(telemetry_values[i].name + ": " + telemetry_values[i].value + " " + telemetry_values[i].unit + "\n" + QString::fromStdString(timeConv(seconds)));
     Item->setBackground(Qt::red);
   }
   else if (telemetry_values[i].color == "yellow")
