@@ -46,12 +46,12 @@ void *flex(void *arg)
     if (fd != -1)
     {
       a = fd;
-      cout << "Start COM port " << endl;
+      cout << "====== COM ======" << endl;
     }
     else
     {
       a = client_socket;
-      cout << "Start socket " << endl;
+      cout << "===== SOCKET ======" << endl;
     }
 
     TResult returnValue = read_head(fd, client_socket);
@@ -75,7 +75,7 @@ void *flex(void *arg)
     }
     cout << endl;
 
-    cout << "Send request" << endl;
+    cout << "Send *<S" << endl;
     char answer[19]; // массив ответа
     char answer_body[3] = {'*', '<', 'S'};
     uint16_t body_size = 3;
@@ -108,7 +108,6 @@ void *flex(void *arg)
     uint8_t struct_version = (uint8_t)returnValue.buff[8]; // Версия структуры данных
     cout << "struct: " << struct_version << endl;
     uint8_t data_size = (uint8_t)returnValue.buff[9]; // Размер последующего конфигурационного поля
-    cout << "data size: " << data_size << endl;
     uint8_t bitfield_size = data_size / 8 + 1;
     cout << "bitfield size " << bitfield_size << " bytes" << endl;
 
@@ -131,7 +130,7 @@ void *flex(void *arg)
     }
     cout << endl;
 
-    cout << "Send request 2" << endl;
+    cout << "Send *<FLEX" << endl;
     char answer_2[25]; // массив ответа 2
     char body[6] = {'*', '<', 'F', 'L', 'E', 'X'};
     char answer_body_2[9];
@@ -224,7 +223,7 @@ void *flex(void *arg)
         uint8_t rd = (uint8_t)buff_3_2[0];
         telemetry_values[i].value = QString::number(rd);        
       }
-
+      cout << telemetry_values[i].name << ": " << telemetry_values[i].value << endl;
       temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
       buff_3_2.clear();
     }
@@ -241,11 +240,11 @@ void *flex(void *arg)
     }
     else
     {
-      cout << "crc8 fail: " << buff_val_3_2 << crc8 << endl;
+      cout << "crc8 fail: my: " << buff_val_3_2 << " input: " << crc8 << endl;
       continue;
     }
 
-    cout << "Send request 3" << endl;
+    cout << "Send accept data" << endl;
 
     char answer_3[3];
     copy(buff_3_1, buff_3_1 + 2, answer_3);
@@ -260,6 +259,7 @@ void *flex(void *arg)
     cout << "Send " << bytes_3 << " bytes" << endl;
 
     TelemetryConvert(telemetry_values, bitfield);
+    cout << "++++++ END ++++++" << endl;
   }
 
   close(a);

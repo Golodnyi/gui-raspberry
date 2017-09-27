@@ -99,14 +99,14 @@ TResult read_head(int fd, int client_socket)
   my_in(fd, returnValue.buff, returnValue.size, client_socket);
   // создаем массив, для хранения пакета и считываем в него данные
 
-  unsigned char buff_val = xor_sum((unsigned char *)returnValue.buff, 19);
-  if (buff_val == returnValue.CSd)
+  unsigned char CSd_val = xor_sum((unsigned char *)returnValue.buff, 19);
+  if (CSd_val == returnValue.CSd)
   {
     cout << "CSd success" << endl;
   }
   else
   {
-    cout << "CSd fail" << endl;
+    cout << "CSd fail, my:" << CSd_val << " input: " << returnValue.CSd
   }
 
   char CSp[16];
