@@ -14,7 +14,7 @@ string timeConv(int s)
 {
   int m, h;
   m = (s / 60) % 60;
-  h = (s / 360) % 24;
+  h = (s / 3600) % 24;
   s = s % 60;
   if (h)
   {
