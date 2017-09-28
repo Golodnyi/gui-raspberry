@@ -19,7 +19,7 @@ int client_socket;
 
 extern int open_socket(int listen_socket);
 extern int open_port(int fd);
-extern TResult read_head(int fd, int client_socket); //Считывание head
+extern TResult read_head(int fd, int client_socket, QLabel *label); //Считывание head
 extern int my_in(int fd, char *buff, int size, int client_socket);
 extern char answer_collect(TResult returnValue, char *answer, char *answer_body,
                            int body_size);
@@ -32,7 +32,7 @@ extern string ftos(float f, int nd);
 
 void *flex(void *arg)
 {
-  dataStruct *telemetry_values = (dataStruct *)arg;
+  flex_args *dataFlex = (flex_args *)arg;
   vector<char> temp_vector;
 
   fd = open_port(fd);
@@ -54,7 +54,7 @@ void *flex(void *arg)
       cout << "===== SOCKET ======" << endl;
     }
 
-    TResult returnValue = read_head(fd, client_socket);
+    TResult returnValue = read_head(fd, client_socket, dataFlex->label);
 
     char s[3];
 
@@ -90,7 +90,7 @@ void *flex(void *arg)
     cout << "Send " << bytes << " bytes"
          << endl; // выводим количество отправленных байт
 
-    returnValue = read_head(fd, client_socket);
+    returnValue = read_head(fd, client_socket, dataFlex->label);
 
     char FLEX[6];
     copy(returnValue.buff, returnValue.buff + 6, FLEX);
@@ -178,52 +178,52 @@ void *flex(void *arg)
         continue;
       }
 
-      buff_3_2.resize(telemetry_values[i].byte);
-      my_in(fd, &buff_3_2[0], telemetry_values[i].byte, client_socket);
-      if (telemetry_values[i].type == "I32")
+      buff_3_2.resize(dataFlex->telemetry_values[i].byte);
+      my_in(fd, &buff_3_2[0], dataFlex->telemetry_values[i].byte, client_socket);
+      if (dataFlex->telemetry_values[i].type == "I32")
       {
         int32_t rd = ((int8_t)buff_3_2[3] << 24) +
                     ((int8_t)buff_3_2[2] << 16) +
                     ((int8_t)buff_3_2[1] << 8) + (int8_t)buff_3_2[0];
-        telemetry_values[i].value = QString::number(rd);
+        dataFlex->telemetry_values[i].value = QString::number(rd);
       }
-      else if (telemetry_values[i].type == "U32")
+      else if (dataFlex->telemetry_values[i].type == "U32")
       {
         uint32_t rd = ((uint8_t)buff_3_2[3] << 24) +
                      ((uint8_t)buff_3_2[2] << 16) +
                      ((uint8_t)buff_3_2[1] << 8) + (uint8_t)buff_3_2[0];
-        telemetry_values[i].value = QString::number(rd);
+        dataFlex->telemetry_values[i].value = QString::number(rd);
       }
-      else if (telemetry_values[i].type == "Float")
+      else if (dataFlex->telemetry_values[i].type == "Float")
       {
         for (int j = 0; j < 4; j++)
         {
           speed.speedData[j] = buff_3_2[j];
         }
         string rd = ftos(speed.speed, 2);
-        telemetry_values[i].value = QString::fromStdString(rd);     
+        dataFlex->telemetry_values[i].value = QString::fromStdString(rd);     
       }
-      else if (telemetry_values[i].type == "I16")
+      else if (dataFlex->telemetry_values[i].type == "I16")
       {
         int16_t rd = ((int8_t)buff_3_2[1] << 8) + (int8_t)buff_3_2[0];
-        telemetry_values[i].value = QString::number(rd);        
+        dataFlex->telemetry_values[i].value = QString::number(rd);        
       }
-      else if (telemetry_values[i].type == "U16")
+      else if (dataFlex->telemetry_values[i].type == "U16")
       {
         uint16_t rd = ((uint8_t)buff_3_2[1] << 8) + (uint8_t)buff_3_2[0];
-        telemetry_values[i].value = QString::number(rd);        
+        dataFlex->telemetry_values[i].value = QString::number(rd);        
       }
-      else if (telemetry_values[i].type == "I8")
+      else if (dataFlex->telemetry_values[i].type == "I8")
       {
         int8_t rd = (int8_t)buff_3_2[0];
-        telemetry_values[i].value = QString::number(rd);        
+        dataFlex->telemetry_values[i].value = QString::number(rd);        
       }
-      else if (telemetry_values[i].type == "U8")
+      else if (dataFlex->telemetry_values[i].type == "U8")
       {
         uint8_t rd = (uint8_t)buff_3_2[0];
-        telemetry_values[i].value = QString::number(rd);        
+        dataFlex->telemetry_values[i].value = QString::number(rd);        
       }
-      cout << telemetry_values[i].name.toUtf8().constData() << ": " << telemetry_values[i].value.toUtf8().constData() << endl;
+      cout << dataFlex->telemetry_values[i].name.toUtf8().constData() << ": " << dataFlex->telemetry_values[i].value.toUtf8().constData() << endl;
       temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
       buff_3_2.clear();
     }
@@ -237,10 +237,12 @@ void *flex(void *arg)
     if (buff_val_3_2 == crc8)
     {
       cout << "crc8 success" << endl;
+      dataFlex->label->setText("CRC8 корректный");            
     }
     else
     {
       cout << "crc8 fail: my: " << buff_val_3_2 << " input: " << crc8 << endl;
+      dataFlex->label->setText("CRC8 некорректный");                  
       continue;
     }
 
@@ -258,7 +260,8 @@ void *flex(void *arg)
     }
     cout << "Send " << bytes_3 << " bytes" << endl;
 
-    TelemetryConvert(telemetry_values, bitfield);
+    TelemetryConvert(dataFlex->telemetry_values, bitfield);
+    dataFlex->label->setText("Ожидание данных");          
   }
 
   close(a);

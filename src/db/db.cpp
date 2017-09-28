@@ -55,7 +55,7 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label)
     cout << "SQL Query filed: " << query.lastError().text().toStdString()
          << endl;
   }
-  label->setText("Готово");
+  label->setText("База данных загружена");
   int i = 0;
   while (query.next())
   {

@@ -2,6 +2,7 @@
 #define GUIRASPBERRY_STRUCT_H
 
 #include <QtGui>
+#include <QLabel>
 #include <iostream>
 using namespace std;
 
@@ -29,6 +30,12 @@ struct TResult
   uint8_t CSd;
   uint8_t CSp;
   char buff[19]; //массив для пакета данных
+};
+
+struct flex_args
+{
+  dataStruct telemetry_values[85];
+  QLabel *label;
 };
 
 #endif // GUIRASPBERRY_STRUCT_H

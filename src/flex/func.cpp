@@ -1,5 +1,6 @@
 #include "src/struct.h"
 #include <iostream>
+#include <QLabel>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ crc8_calc(unsigned char *lp_block, /* (вх) указатель на буфер 
   return crc;
 }
 
-TResult read_head(int fd, int client_socket)
+TResult read_head(int fd, int client_socket, QLabel *label)
 {
 
   TResult returnValue;
@@ -103,10 +104,12 @@ TResult read_head(int fd, int client_socket)
   if (CSd_val == returnValue.CSd)
   {
     cout << "CSd success" << endl;
+    label->setText("CSd корректный");
   }
   else
   {
     cout << "CSd fail, my:" << CSd_val << " input: " << returnValue.CSd << endl;
+    label->setText("CSd некорректный");    
   }
 
   char CSp[16];
@@ -118,12 +121,14 @@ TResult read_head(int fd, int client_socket)
   if (CSp_val == returnValue.CSp)
   {
     cout << "CSp success" << endl;
+    label->setText("CSp корректный");    
   }
   else
   {
     cout << "CSp fail, my:" << CSp_val << " input: " << returnValue.CSp
          << endl; // проверяем заголовок (CSp-контр.сумма заголовка, head-16
                   // байтовый заголовок пакета)
+    label->setText("CSp некорректный");    
   }
   return (returnValue);
 }

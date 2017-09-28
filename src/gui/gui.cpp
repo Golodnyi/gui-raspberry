@@ -26,6 +26,7 @@ extern dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label);
 extern int color(dataStruct *telemetry_values, int i, QListWidgetItem *Item,
                  bool sound);
 extern string PROGRAM_PATH;
+
 void *update(void *arg, bitset<85> bitfield)
 {
   window->setUpdatesEnabled(false);
@@ -53,7 +54,7 @@ void *update(void *arg, bitset<85> bitfield)
     }
     color(telemetry_values, i, Item, sound);
   }
-  window->setUpdatesEnabled(true);  
+  window->setUpdatesEnabled(true);
 }
 
 string path(char *argv[])
@@ -76,16 +77,16 @@ int gui_init(int argc, char *argv[])
   QApplication app(argc, argv); //(постоянная) приложение
   app.setOverrideCursor(Qt::BlankCursor);
   window = new QWidget;
-  
+
   QLabel *label = new QLabel("Загрузка приложения");
   label->setFont(QFont("Times", 22, QFont::Normal));
   QStatusBar *statusBar = new QStatusBar(window);
   statusBar->addWidget(label);
-
-  dataStruct telemetry_values[85];
-
+  
+  flex_args dataFlex;
+  
   connect(label, path(argv));
-  getTelemetry((dataStruct *)telemetry_values, label);
+  getTelemetry((dataStruct *)dataFlex.telemetry_values, label);
 
   leftWidget = new QListWidget;
   leftWidget->setFont(QFont("Times", 30, QFont::Normal));
@@ -94,7 +95,7 @@ int gui_init(int argc, char *argv[])
   leftWidget->insertItem(0, Item);
 
   rightWidget = new QListWidget;
-  rightWidget->setFont(QFont("Times",30, QFont::Normal));
+  rightWidget->setFont(QFont("Times", 30, QFont::Normal));
 
   QGridLayout *MainLayout = new QGridLayout();
   MainLayout->addWidget(leftWidget, 0, 0);
@@ -106,7 +107,9 @@ int gui_init(int argc, char *argv[])
   window->showFullScreen();
 
   pthread_t thread;
-  int result = pthread_create(&thread, NULL, flex, &telemetry_values);
+  dataFlex.label = label;
+
+  int result = pthread_create(&thread, NULL, flex, &dataFlex);
   {
     if (result != 0)
     {
