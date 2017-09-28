@@ -58,13 +58,16 @@ TResult read_head(int fd, int client_socket, flex_args *dataFlex)
   char preamble[4] = {'@', 'N', 'T', 'C'};
   char c[1];
   int i = 0;
+  string find;
   while (true)
   {
     my_in(fd, (char *)c, 1, client_socket);
-    dataFlex->rightLabel->setText(QString::fromStdString(to_string(c[0])));
+    find += to_string(c[0]);
+    dataFlex->rightLabel->setText(QString::fromStdString(find));
     if (preamble[i] != c[0])
     {
       i = 0;
+      find = "";
     }
 
     if (i == 3)
