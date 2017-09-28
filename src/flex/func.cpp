@@ -72,7 +72,6 @@ TResult read_head(int fd, int client_socket, flex_args *dataFlex)
 
     if (i == 3)
     {
-      dataFlex->rightLabel->setText("@NTC");
       break;
     }
 
