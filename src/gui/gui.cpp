@@ -78,15 +78,20 @@ int gui_init(int argc, char *argv[])
   app.setOverrideCursor(Qt::BlankCursor);
   window = new QWidget;
 
-  QLabel *label = new QLabel("Загрузка приложения");
-  label->setFont(QFont("Times", 22, QFont::Normal));
-  QStatusBar *statusBar = new QStatusBar(window);
-  statusBar->addWidget(label);
+  QLabel *leftLabel = new QLabel("Загрузка приложения");
+  leftLabel->setFont(QFont("Times", 22, QFont::Normal));
+  QStatusBar *leftStatusBar = new QStatusBar(window);
+  leftStatusBar->addWidget(leftLabel);
+
+  QLabel *rightLabel = new QLabel("");
+  rightLabel->setFont(QFont("Times", 22, QFont::Normal));
+  QStatusBar *rightStatusBar = new QStatusBar(window);
+  rightStatusBar->addWidget(rightLabel);
   
   flex_args dataFlex;
   
-  connect(label, path(argv));
-  getTelemetry((dataStruct *)dataFlex.telemetry_values, label);
+  connect(leftLabel, path(argv));
+  getTelemetry((dataStruct *)dataFlex.telemetry_values, leftLabel);
 
   leftWidget = new QListWidget;
   leftWidget->setFont(QFont("Times", 30, QFont::Normal));
@@ -100,14 +105,16 @@ int gui_init(int argc, char *argv[])
   QGridLayout *MainLayout = new QGridLayout();
   MainLayout->addWidget(leftWidget, 0, 0);
   MainLayout->addWidget(rightWidget, 0, 1);
-  MainLayout->addWidget(statusBar, 1, 0);
+  MainLayout->addWidget(leftStatusBar, 1, 0);
+  MainLayout->addWidget(rightStatusBar, 1, 1);
 
   window->setContentsMargins(28, 30, 28, 30);
   window->setLayout(MainLayout);
   window->showFullScreen();
 
   pthread_t thread;
-  dataFlex.label = label;
+  dataFlex.leftLabel = leftLabel;
+  dataFlex.rightLabel = rightLabel;
 
   int result = pthread_create(&thread, NULL, flex, &dataFlex);
   {

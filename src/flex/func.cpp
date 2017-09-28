@@ -52,9 +52,8 @@ crc8_calc(unsigned char *lp_block, /* (вх) указатель на буфер 
   return crc;
 }
 
-TResult read_head(int fd, int client_socket, QLabel *label)
+TResult read_head(int fd, int client_socket, flex_args *dataFlex)
 {
-
   TResult returnValue;
   char preamble[4] = {'@', 'N', 'T', 'C'};
   char c[1];
@@ -62,6 +61,7 @@ TResult read_head(int fd, int client_socket, QLabel *label)
   while (true)
   {
     my_in(fd, (char *)c, 1, client_socket);
+    dataFlex->rightLabel->setText("Поиск префикса: " + c[0]);
     if (preamble[i] != c[0])
     {
       i = 0;
@@ -69,6 +69,7 @@ TResult read_head(int fd, int client_socket, QLabel *label)
 
     if (i == 3)
     {
+      dataFlex->rightLabel->setText("Префикс найден: @NTC");
       break;
     }
 
@@ -104,12 +105,12 @@ TResult read_head(int fd, int client_socket, QLabel *label)
   if (CSd_val == returnValue.CSd)
   {
     cout << "CSd success" << endl;
-    label->setText("CSd корректный");
+    dataFlex->leftLabel->setText("CSd корректный");
   }
   else
   {
     cout << "CSd fail, my:" << CSd_val << " input: " << returnValue.CSd << endl;
-    label->setText("CSd некорректный");    
+    dataFlex->leftLabel->setText("CSd некорректный");
   }
 
   char CSp[16];
@@ -121,14 +122,14 @@ TResult read_head(int fd, int client_socket, QLabel *label)
   if (CSp_val == returnValue.CSp)
   {
     cout << "CSp success" << endl;
-    label->setText("CSp корректный");    
+    dataFlex->leftLabel->setText("CSp корректный");
   }
   else
   {
     cout << "CSp fail, my:" << CSp_val << " input: " << returnValue.CSp
          << endl; // проверяем заголовок (CSp-контр.сумма заголовка, head-16
                   // байтовый заголовок пакета)
-    label->setText("CSp некорректный");    
+    dataFlex->leftLabel->setText("CSp некорректный");
   }
   return (returnValue);
 }

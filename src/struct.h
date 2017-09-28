@@ -35,7 +35,8 @@ struct TResult
 struct flex_args
 {
   dataStruct telemetry_values[85];
-  QLabel *label;
+  QLabel *leftLabel;
+  QLabel *rightLabel;
 };
 
 #endif // GUIRASPBERRY_STRUCT_H

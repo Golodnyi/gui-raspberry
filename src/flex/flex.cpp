@@ -19,7 +19,7 @@ int client_socket;
 
 extern int open_socket(int listen_socket);
 extern int open_port(int fd);
-extern TResult read_head(int fd, int client_socket, QLabel *label); //Считывание head
+extern TResult read_head(int fd, int client_socket, flex_args *dataFlex); //Считывание head
 extern int my_in(int fd, char *buff, int size, int client_socket);
 extern char answer_collect(TResult returnValue, char *answer, char *answer_body,
                            int body_size);
@@ -54,7 +54,7 @@ void *flex(void *arg)
       cout << "===== SOCKET ======" << endl;
     }
 
-    TResult returnValue = read_head(fd, client_socket, dataFlex->label);
+    TResult returnValue = read_head(fd, client_socket, dataFlex);
 
     char s[3];
 
@@ -90,7 +90,7 @@ void *flex(void *arg)
     cout << "Send " << bytes << " bytes"
          << endl; // выводим количество отправленных байт
 
-    returnValue = read_head(fd, client_socket, dataFlex->label);
+    returnValue = read_head(fd, client_socket, dataFlex);
 
     char FLEX[6];
     copy(returnValue.buff, returnValue.buff + 6, FLEX);
@@ -237,12 +237,12 @@ void *flex(void *arg)
     if (buff_val_3_2 == crc8)
     {
       cout << "crc8 success" << endl;
-      dataFlex->label->setText("CRC8 корректный");            
+      dataFlex->leftLabel->setText("CRC8 корректный");            
     }
     else
     {
       cout << "crc8 fail: my: " << buff_val_3_2 << " input: " << crc8 << endl;
-      dataFlex->label->setText("CRC8 некорректный");                  
+      dataFlex->leftLabel->setText("CRC8 некорректный");                  
       continue;
     }
 
@@ -261,7 +261,7 @@ void *flex(void *arg)
     cout << "Send " << bytes_3 << " bytes" << endl;
 
     TelemetryConvert(dataFlex->telemetry_values, bitfield);
-    dataFlex->label->setText("Ожидание данных");          
+    dataFlex->leftLabel->setText("Ожидание данных");          
   }
 
   close(a);
