@@ -43,7 +43,6 @@ void *flex(void *arg)
   }
   while (fd != -1 | (client_socket = accept(listen_socket, NULL, NULL)))
   {
-    dataFlex->leftLabel->setText("");
     if (fd != -1)
     {
       a = fd;
