@@ -65,7 +65,7 @@ dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label)
     telemetry_values[i].name = query.value(3).toString();
     telemetry_values[i].unit = query.value(4).toString();
     telemetry_values[i].filter = query.value(5).toString();
-    telemetry_values[i].enable = query.value(6).toBool();
+    telemetry_values[i].disable = query.value(6).toBool();
     telemetry_values[i].position = query.value(7).toInt();
     ;
     i += 1;
@@ -80,18 +80,20 @@ void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield)
   QSqlQuery query;
   for (int i = 0; i < 85; i++)
   {
-    if (telemetry_values[i].enable and (bool) bitfield[i] == 1)
+    if (telemetry_values[i].disable || !(bool)bitfield[i])
     {
-      /**
+      continue;
+    }
+    /**
        * TODO: Моточасы переводятся в часы хардкодом
        **/
-      if (telemetry_values[i].alias == "Motochas") {
-        telemetry_values[i].value = QString::number((int)(telemetry_values[i].value.toInt() / 3600));
-      }
-      if (telemetry_values[i].filter.length())
-      {
-        derive(telemetry_values[i].filter, telemetry_values, i);
-      }
+    if (telemetry_values[i].alias == "Motochas")
+    {
+      telemetry_values[i].value = QString::number((int)(telemetry_values[i].value.toInt() / 3600));
+    }
+    if (telemetry_values[i].filter.length())
+    {
+      derive(telemetry_values[i].filter, telemetry_values, i);
     }
   }
   cout << "End telemetry convert" << endl;

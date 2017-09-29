@@ -35,7 +35,7 @@ void *update(void *arg, bitset<85> bitfield)
   rightWidget->clear();
   for (int i = 0; i < 85; i++)
   {
-    if (!telemetry_values[i].enable || !(bool)bitfield[i])
+    if (telemetry_values[i].disable || !(bool)bitfield[i])
     {
       continue;
     }
