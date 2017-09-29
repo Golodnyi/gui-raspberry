@@ -90,7 +90,7 @@ int open_socket(int listen_socket)
   hints.ai_protocol = IPPROTO_TCP; // Используем протокол TCP
   hints.ai_flags = AI_PASSIVE;
 
-  int result = getaddrinfo(NULL, "9002", &hints,
+  int result = getaddrinfo(NULL, "9000", &hints,
                            &addr); // задаем фактический адрес: IP и номер порта
   if (result != 0)                 // проверка на ошибку инициализации адресса
   {
