@@ -236,12 +236,10 @@ void *flex(void *arg)
     if (buff_val_3_2 == crc8)
     {
       cout << "crc8 success" << endl;
-      dataFlex->leftLabel->setText(dataFlex->leftLabel->text() + " CRC8 ok");            
     }
     else
     {
       cout << "crc8 fail: my: " << buff_val_3_2 << " input: " << crc8 << endl;
-      dataFlex->leftLabel->setText(dataFlex->leftLabel->text() + " CRC8 bad");   
       continue;
     }
 

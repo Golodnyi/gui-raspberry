@@ -102,12 +102,10 @@ TResult read_head(int fd, int client_socket, flex_args *dataFlex)
   if (CSd_val == returnValue.CSd)
   {
     cout << "CSd success" << endl;
-    dataFlex->leftLabel->setText("CSd ok");
   }
   else
   {
     cout << "CSd fail, my:" << CSd_val << " input: " << returnValue.CSd << endl;
-    dataFlex->leftLabel->setText("CSd bad");
   }
 
   char CSp[16];
@@ -119,14 +117,12 @@ TResult read_head(int fd, int client_socket, flex_args *dataFlex)
   if (CSp_val == returnValue.CSp)
   {
     cout << "CSp success" << endl;
-    dataFlex->leftLabel->setText(dataFlex->leftLabel->text() + " CSp ok");
   }
   else
   {
     cout << "CSp fail, my:" << CSp_val << " input: " << returnValue.CSp
          << endl; // проверяем заголовок (CSp-контр.сумма заголовка, head-16
                   // байтовый заголовок пакета)
-    dataFlex->leftLabel->setText(dataFlex->leftLabel->text() + " CSp bad");
   }
   return (returnValue);
 }
