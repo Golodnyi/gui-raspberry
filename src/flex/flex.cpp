@@ -43,6 +43,7 @@ void *flex(void *arg)
   }
   while (fd != -1 | (client_socket = accept(listen_socket, NULL, NULL)))
   {
+    dataFlex->rightLabel->setText("|");
     if (fd != -1)
     {
       a = fd;
@@ -55,6 +56,7 @@ void *flex(void *arg)
     }
 
     TResult returnValue = read_head(fd, client_socket, dataFlex);
+    dataFlex->rightLabel->setText("/");
 
     char s[3];
 
@@ -82,6 +84,7 @@ void *flex(void *arg)
     answer_collect(returnValue, (char *)answer, (char *)answer_body, body_size);
     copy(answer_body, answer_body + 3, answer + 16);
     int bytes = my_out(fd, (char *)answer, 19, client_socket);
+    dataFlex->rightLabel->setText("--");
     if (bytes == -1)
     {
       char *errmsg = strerror(errno);
@@ -91,7 +94,7 @@ void *flex(void *arg)
          << endl; // выводим количество отправленных байт
 
     returnValue = read_head(fd, client_socket, dataFlex);
-
+    dataFlex->rightLabel->setText("\\");
     char FLEX[6];
     copy(returnValue.buff, returnValue.buff + 6, FLEX);
     for (int i = 0; i <= 5; i++)
@@ -144,6 +147,7 @@ void *flex(void *arg)
     copy(answer_body_2, answer_body_2 + 9, answer_2 + 16);
 
     int bytes_2 = my_out(fd, (char *)answer_2, 25, client_socket);
+    dataFlex->rightLabel->setText("|");
     if (bytes_2 == -1)
     {
       char *errmsg = strerror(errno);
@@ -153,6 +157,7 @@ void *flex(void *arg)
 
     char buff_3_1[2];                              // 3 пакет с текущим состоянием
     my_in(fd, (char *)buff_3_1, 2, client_socket); //связали сокет с буфером 3
+    dataFlex->rightLabel->setText("/");
     char index[2];
     copy(buff_3_1, buff_3_1 + 2,
          index); // перенесли первые 2 байта из сообщения
@@ -227,7 +232,7 @@ void *flex(void *arg)
       temp_vector.insert(temp_vector.end(), buff_3_2.begin(), buff_3_2.end());
       buff_3_2.clear();
     }
-
+    dataFlex->rightLabel->setText("--");
     char buff_3_3[1];
     my_in(fd, (char *)buff_3_3, 1, client_socket);
     uint8_t crc8 = (uint8_t)buff_3_3[0];
@@ -261,7 +266,8 @@ void *flex(void *arg)
     cout << "Send " << bytes_3 << " bytes" << endl;
 
     TelemetryConvert(dataFlex->telemetry_values, bitfield);
-    dataFlex->leftLabel->setText("Ожидание данных");          
+    dataFlex->leftLabel->setText("Ожидание данных"); 
+    dataFlex->rightLabel->setText("\\");         
   }
 
   close(a);
