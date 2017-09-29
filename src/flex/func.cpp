@@ -68,7 +68,6 @@ TResult read_head(int fd, int client_socket, flex_args *dataFlex)
     if (preamble[i] != c[0])
     {
       i = 0;
-      dataFlex->rightLabel->setText("");
     }
 
     if (i == 3)
