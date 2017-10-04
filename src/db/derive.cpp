@@ -7,15 +7,38 @@ using namespace std;
 
 void derive(QString tab, dataStruct *telemetry_values, int i)
 {
-  if (!telemetry_values[i].filter.length()) {
+  if (!telemetry_values[i].filter.length())
+  {
     return;
   }
-
+  int value = telemetry_values[i].value.toInt();
   if (telemetry_values[i].filter == "motochas")
   {
-    telemetry_values[i].value = QString::number((int)(telemetry_values[i].value.toInt() / 3600));
+    telemetry_values[i].value = QString::number(value / 3600);
     return;
-  } 
+  }
+  else if (telemetry_values[i].filter == "air_pressure")
+  {
+    if (value < 500)
+    {
+      telemetry_values[i].value = QString::number(0);
+    }
+    else
+    {
+      telemetry_values[i].value = QString::number((value / 1000 - 0.5) * 2);
+    }
+    return;
+  }
+  else if (telemetry_values[i].filter == "vacuum_k19")
+  {
+    telemetry_values[i].value = QString::number((0.2 * value - 2.8) / 1000);
+    return;
+  }
+  else if (telemetry_values[i].filter == "oil_pressure_k19")
+  {
+    telemetry_values[i].value = QString::number(-2.7 * value + 14.379);
+    return;
+  }
 
   QSqlQuery query;
   if (!query.exec(("SELECT val, color FROM " + tab + " WHERE " +
