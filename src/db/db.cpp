@@ -7,7 +7,7 @@
 
 using namespace std;
 
-extern QString derive(QString tab, dataStruct *telemetry_values, int i);
+extern void derive(QString tab, dataStruct *telemetry_values, int i);
 extern void *update(void *arg, bitset<85> bitfield);
 extern int PIN;
 
@@ -85,16 +85,10 @@ void *TelemetryConvert(dataStruct *telemetry_values, bitset<85> bitfield)
       continue;
     }
     /**
-       * TODO: Моточасы переводятся в часы хардкодом
-       **/
-    if (telemetry_values[i].alias == "Motochas")
-    {
-      telemetry_values[i].value = QString::number((int)(telemetry_values[i].value.toInt() / 3600));
-    }
-    if (telemetry_values[i].filter.length())
-    {
-      derive(telemetry_values[i].filter, telemetry_values, i);
-    }
+      * TODO: Моточасы переводятся в часы хардкодом
+    **/
+
+    derive(telemetry_values[i].filter, telemetry_values, i);
   }
   cout << "End telemetry convert" << endl;
   update(telemetry_values, bitfield);

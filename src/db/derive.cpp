@@ -5,8 +5,18 @@
 
 using namespace std;
 
-QString derive(QString tab, dataStruct *telemetry_values, int i)
+void derive(QString tab, dataStruct *telemetry_values, int i)
 {
+  if (!telemetry_values[i].filter.length()) {
+    return;
+  }
+
+  if (telemetry_values[i].filter == "motochas")
+  {
+    telemetry_values[i].value = QString::number((int)(telemetry_values[i].value.toInt() / 3600));
+    return;
+  } 
+
   QSqlQuery query;
   if (!query.exec(("SELECT val, color FROM " + tab + " WHERE " +
                    telemetry_values[i].value + " BETWEEN min AND max;")))
@@ -22,10 +32,7 @@ QString derive(QString tab, dataStruct *telemetry_values, int i)
   }
   else
   {
-    cout << "telemetry_values[" << i << "]."
-         << telemetry_values[i].name.toStdString()
-         << " not included in the range" << endl;
     telemetry_values[i].color = "lightGray";
   }
-  return (telemetry_values[i].value, telemetry_values[i].color);
+  return;
 }
