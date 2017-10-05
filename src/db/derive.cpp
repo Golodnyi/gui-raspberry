@@ -43,6 +43,34 @@ void derive(QString tab, dataStruct *telemetry_values, int i)
     else
     {
       telemetry_values[i].value = QString::number(-1E-10 * pow(value, 3) + 2E-06 * pow(value, 2) - 0.0112 * value + 24.666);
+      if (telemetry_values[i].value.toInt() <= 1 || telemetry_values[i].value.toInt() >= 5.5)
+      {
+        telemetry_values[i].color = "red";
+      }
+      else if (telemetry_values[i].value.toInt() <= 2 || telemetry_values[i].value.toInt() >= 4)
+      {
+        telemetry_values[i].color = "yellow";
+      }
+    }
+    return;
+  }
+  else if (telemetry_values[i].filter == "oil_pressure_k50")
+  {
+    if (value < 1900)
+    {
+      telemetry_values[i].value = QString::number(0);
+    }
+    else
+    {
+      telemetry_values[i].value = QString::number(-1E-10 * pow(value, 3) + 2E-06 * pow(value, 2) - 0.0112 * value + 24.666);
+      if (telemetry_values[i].value.toInt() <= 1 || telemetry_values[i].value.toInt() >= 5.5)
+      {
+        telemetry_values[i].color = "red";
+      }
+      else if (telemetry_values[i].value.toInt() <= 1.5 || telemetry_values[i].value.toInt() >= 4.5)
+      {
+        telemetry_values[i].color = "yellow";
+      }
     }
     return;
   }
