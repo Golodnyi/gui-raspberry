@@ -36,9 +36,12 @@ void derive(QString tab, dataStruct *telemetry_values, int i)
   }
   else if (telemetry_values[i].filter == "oil_pressure_k19")
   {
-    if (value < 1900) {
+    if (value < 1900)
+    {
       telemetry_values[i].value = QString::number(0);
-    } else {
+    }
+    else
+    {
       telemetry_values[i].value = QString::number(-1E-10 * pow(value, 3) + 2E-06 * pow(value, 2) - 0.0112 * value + 24.666);
     }
     return;
