@@ -36,13 +36,16 @@ void derive(QString tab, dataStruct *telemetry_values, int i)
   }
   else if (telemetry_values[i].filter == "oil_pressure_k19")
   {
-    telemetry_values[i].value = QString::number(-2.7 * value + 14.379);
+    if (value < 1900) {
+      telemetry_values[i].value = QString::number(0);
+    } else {
+      telemetry_values[i].value = QString::number(-1E-10 * pow(value, 3) + 2E-06 * pow(value, 2) - 0.0112 * value + 24.666);
+    }
     return;
   }
 
   QSqlQuery query;
-  if (!query.exec(("SELECT val, color FROM " + tab + " WHERE " +
-                   telemetry_values[i].value + " BETWEEN min AND max;")))
+  if (!query.exec(("SELECT val, color FROM " + tab + " WHERE " + telemetry_values[i].value + " BETWEEN min AND max;")))
   {
     cout << "SQL Query filed 2 : " << query.lastError().text().toStdString()
          << endl;
