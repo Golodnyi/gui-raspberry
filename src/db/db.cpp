@@ -10,6 +10,7 @@ using namespace std;
 extern void derive(QString tab, dataStruct *telemetry_values, int i);
 extern void *update(void *arg, bitset<85> bitfield);
 extern int PIN;
+extern int SPEED;
 
 QSqlDatabase sdb;
 
@@ -28,6 +29,21 @@ void getPin(QLabel *label)
   }
 }
 
+void getSpeed(QLabel *label)
+{
+  QSqlQuery query;
+  if (!query.exec(("SELECT port FROM raspberry WHERE funk='speed'")))
+  {
+    cout << "SQL Query filed: " << query.lastError().text().toStdString()
+         << endl;
+  }
+  while (query.next())
+  {
+    SPEED = query.value(0).toInt();
+    label->setText("SPEED загружен.");
+  }
+}
+
 void connect(QLabel *label, string path)
 {
   cout << path << endl;
@@ -42,6 +58,7 @@ void connect(QLabel *label, string path)
   cout << "Connect to db" << endl;
   label->setText("База данных загружена.");
   getPin(label);
+  getSpeed(label);
 }
 
 dataStruct getTelemetry(dataStruct *telemetry_values, QLabel *label)

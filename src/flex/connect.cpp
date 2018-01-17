@@ -10,6 +10,7 @@
 using namespace std;
 
 char *port;
+extern int SPEED;
 
 int set_interface_attribs(int fd, int speed, int parity)
 {
@@ -72,7 +73,7 @@ int open_port(int fd)
   else
   {
     cout << "com port open" << endl;
-    int r = set_interface_attribs(fd, B9600, 0);
+    int r = set_interface_attribs(fd, SPEED, 0);
     cout << "set speed: " << r << endl;
     // fcntl(fd, F_SETFL, 0);
   }
